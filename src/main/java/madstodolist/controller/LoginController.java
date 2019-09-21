@@ -62,7 +62,7 @@ public class LoginController {
    public String registroSubmit(@Valid RegistroData registroData, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
-            return "registroForm";
+            return "FormRegistro";
         }
 
         if (usuarioService.findByEmail(registroData.geteMail()) != null) {

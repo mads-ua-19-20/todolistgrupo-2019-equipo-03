@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>es.ua.mads</groupId>
-    <artifactId>mads-todolist-inicial</artifactId>
-    <version>1.0.0</version>
+    <artifactId>mads-todolist-omarmoukket</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
