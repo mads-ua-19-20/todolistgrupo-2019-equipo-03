@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments :: head (titulo='Login')"></head>
+<head th:replace="fragments :: head (titulo='About')"></head>
 
 <body>
+
+<div th:replace="fragments::barra-menu (nombreUsuario=${nombreUsuario}, id=${idUsuario})"/>
+
 <div class="container-fluid">
     <div class="container-fluid">
         <h1>ToDo List</h1>
         <ul>
             <li>Desarrollada por Omar Moukket</li>
-            <li>Versión 1.0.1 (en desarrollo)</li>
+            <li>Versión 1.1.0 (en desarrollo)</li>
             <li>Fecha de release: 21/9/2018</li>
         </ul>
     </div>
