@@ -25,10 +25,10 @@
                 <a class="nav-link" href="/about">ToDoList</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{~/usuarios/{id}/tareas(id=${id})}">Tareas</a>
+                <a class="nav-link" th:if="${id != 'null'}" th:href="@{~/usuarios/{id}/tareas(id=${id})}">Tareas</a>
             </li>
         </ul>
-        <div class="nav-item navbar-nav dropdown">
+        <div class="nav-item navbar-nav dropdown" th:if="${nombreUsuario != 'null'}">
             <a th:text="${nombreUsuario}" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
 
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -39,4 +39,4 @@
     </div>
 </nav>
 
-/html>
+</html>
