@@ -14,4 +14,29 @@
     <span th:text="${scripts}"></span>
 </div>
 
+<nav th:fragment="barra-menu (nombreUsuario, id)" class="navbar navbar-expand-lg navbar-light" style="background-color:#7DCCDA">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/about">ToDoList</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{~/usuarios/{id}/tareas(id=${id})}">Tareas</a>
+            </li>
+        </ul>
+        <div class="nav-item navbar-nav dropdown">
+            <a th:text="${nombreUsuario}" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
+
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Cuenta</a>
+                <a class="dropdown-item" href="/logout">Cerrar sesión</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
 /html>
