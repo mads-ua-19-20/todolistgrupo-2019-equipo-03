@@ -38,4 +38,10 @@ public class HomeController {
 
         return "about";
     }
+
+    @GetMapping("/usuarios")
+    public String usuarios(Model model){
+
+        return "usuarios";
+    }
 }
