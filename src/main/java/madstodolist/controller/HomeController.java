@@ -64,6 +64,18 @@ public class HomeController {
     @GetMapping("/usuarios/{id}")
     public String descripcion(@PathVariable(value="id") Long id, Model model){
 
+        Usuario usuario = usuarioService.findById(id);
+
+        if(usuario !=  null){
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
+            model.addAttribute("usuario", usuario);
+        }
+        else{
+            model.addAttribute("nombreUsuario", "null");
+            model.addAttribute("idUsuario", "null");
+        }
+
         return "descripcionUsuario";
     }
 }

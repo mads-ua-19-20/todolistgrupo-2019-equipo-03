@@ -5,11 +5,22 @@
 
 <body>
 
-<div th:replace="fragments::barra-menu (nombreUsuario='nulo', id='nulo')"/>
+<div th:replace="fragments::barra-menu (nombreUsuario=${nombreUsuario}, id=${idUsuario})"/>
 
 <div class="row mt-3">
     <div class="col">
-        <h4 th:text="'Descripción de usuario'"/>
+        <h4 th:text="'Descripción de ' + ${usuario.nombre}"/>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col">
+        <ul>
+            <li th:text="'ID: ' + ${usuario.id}"/>
+            <li th:text="'Nombre: ' + ${usuario.nombre}"/>
+            <li th:text="'E-mail: ' + ${usuario.email}"/>
+            <li th:text="'Fecha nacimiento: ' + ${usuario.fechaNacimiento}"/>
+        </ul>
     </div>
 </div>
 
