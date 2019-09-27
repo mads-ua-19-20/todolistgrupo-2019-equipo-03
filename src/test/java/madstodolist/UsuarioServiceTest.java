@@ -11,6 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -109,5 +114,27 @@ public class UsuarioServiceTest {
         // THEN
 
         assertThat(usuario.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void servicioConsultaUsuarioDevuelveListaUsuarios() throws ParseException {
+        // GIVEN
+        // Datos cargados de datos-test.sql
+
+        // WHEN
+        Usuario usuario = new Usuario("ana.garcia@gmail.com");
+        usuario.setId(1L);
+        usuario.setNombre("Ana García");
+        usuario.setPassword("12345678");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        usuario.setFechaNacimiento(sdf.parse("2001-02-10"));
+        List<Usuario> lista = new ArrayList();
+        lista.add(usuario);
+
+        List<Usuario> usuarios = usuarioService.findAll();
+
+        // THEN
+
+        assertThat(usuarios.equals(lista));
     }
 }
