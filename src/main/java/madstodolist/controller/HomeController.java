@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpSession;
 
@@ -58,5 +59,11 @@ public class HomeController {
         model.addAttribute("usuarios", usuarioService.findAll());
 
         return "usuarios";
+    }
+
+    @GetMapping("/usuarios/{id}")
+    public String descripcion(@PathVariable(value="id") Long id, Model model){
+
+        return "descripcionUsuario";
     }
 }

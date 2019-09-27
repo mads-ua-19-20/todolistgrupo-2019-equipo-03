@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Descripción de usuario')"></head>
+
+<body>
+
+<div th:replace="fragments::barra-menu (nombreUsuario='nulo', id='nulo')"/>
+
+<div class="row mt-3">
+    <div class="col">
+        <h4 th:text="'Descripción de usuario'"/>
+    </div>
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+</body>
+</html>
