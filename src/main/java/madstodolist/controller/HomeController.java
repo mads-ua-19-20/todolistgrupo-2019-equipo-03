@@ -1,5 +1,6 @@
 package madstodolist.controller;
 
+import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Usuario;
 import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,18 +63,29 @@ public class HomeController {
     }
 
     @GetMapping("/usuarios/{id}")
-    public String descripcion(@PathVariable(value="id") Long id, Model model){
+    public String descripcion(@PathVariable(value="id") Long idDescrip, Model model, HttpSession session){
 
-        Usuario usuario = usuarioService.findById(id);
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
-        if(usuario !=  null){
-            model.addAttribute("nombreUsuario", usuario.getNombre());
-            model.addAttribute("idUsuario", usuario.getId());
-            model.addAttribute("usuario", usuario);
+        if(idLog !=  null){
+            Usuario usuarioLog = usuarioService.findById(idLog);
+            Usuario usuarioDescrip = usuarioService.findById(idDescrip);
+
+            model.addAttribute("nombreUsuario", usuarioLog.getNombre());
+            model.addAttribute("idUsuario", usuarioLog.getId());
+            model.addAttribute("usuario", usuarioDescrip);
         }
-        else{
+        else if(idLog == null){
             model.addAttribute("nombreUsuario", "null");
             model.addAttribute("idUsuario", "null");
+
+            Usuario usuario = usuarioService.findById(idDescrip);
+            if(usuario != null){
+                model.addAttribute("usuario", usuario);
+            }
+            else{
+                throw new UsuarioNotFoundException();
+            }
         }
 
         return "descripcionUsuario";
