@@ -40,7 +40,22 @@ public class HomeController {
     }
 
     @GetMapping("/usuarios")
-    public String usuarios(Model model){
+    public String usuarios(Model model, HttpSession session){
+
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        if(id !=  null){
+            Usuario usuario = usuarioService.findById(id);
+
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
+        }
+        else{
+            model.addAttribute("nombreUsuario", "null");
+            model.addAttribute("idUsuario", "null");
+        }
+
+        model.addAttribute("usuarios", usuarioService.findAll());
 
         return "usuarios";
     }
