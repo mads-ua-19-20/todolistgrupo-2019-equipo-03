@@ -137,4 +137,17 @@ public class UsuarioServiceTest {
 
         assertThat(usuarios.equals(lista));
     }
+
+    @Test
+    public void servicioConsultaUsuarioDevuelveUsuarioAdmin() throws ParseException {
+        // GIVEN
+        // Datos cargados de datos-test.sql
+
+        // WHUsuario usuario = new Usuario("ana.garcia@gmail.com");
+        Usuario usuario = usuarioService.findByAdminCheck(true);
+
+        // THEN
+
+        assertThat(usuario.getId()).isEqualTo(1L);
+    }
 }
