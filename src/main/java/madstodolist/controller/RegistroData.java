@@ -13,6 +13,8 @@ public class RegistroData {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date fechaNacimiento;
 
+    private boolean adminCheck;
+
     public String geteMail() {
         return eMail;
     }
@@ -43,5 +45,13 @@ public class RegistroData {
 
     public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public boolean isAdminCheck() {
+        return adminCheck;
+    }
+
+    public void setAdminCheck(boolean adminCheck) {
+        this.adminCheck = adminCheck;
     }
 }
