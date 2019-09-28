@@ -64,4 +64,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<Usuario> findAll() { return usuarioRepository.findAll(); }
+
+    @Transactional(readOnly = true)
+    public Usuario findByAdminCheck(boolean admin) { return usuarioRepository.findByAdminCheck(admin).orElse(null); }
 }

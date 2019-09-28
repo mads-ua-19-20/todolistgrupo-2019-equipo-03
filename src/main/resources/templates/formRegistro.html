@@ -39,7 +39,7 @@
                                    placeholder="01-12-2019" type="datetime-local" th:field="*{fechaNacimiento}"/>
                         </div>
 
-                        <div class="form-group">
+                        <div th:if="${existeAdmin} == false" class="form-group">
                             <input type="checkbox" name="adminCheck" id="adminCheck">
                             <label class="form-check-label" for="adminCheck">Registrarse como administrador</label>
                         </div>
