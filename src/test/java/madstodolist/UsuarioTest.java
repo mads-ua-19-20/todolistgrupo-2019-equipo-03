@@ -38,12 +38,14 @@ public class UsuarioTest {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         usuario.setFechaNacimiento(sdf.parse("1997-02-20"));
+        usuario.setAdminCheck(false);
 
         // THEN
         assertThat(usuario.getEmail()).isEqualTo("juan.gutierrez@gmail.com");
         assertThat(usuario.getNombre()).isEqualTo("Juan Gutiérrez");
         assertThat(usuario.getPassword()).isEqualTo("12345678");
         assertThat(usuario.getFechaNacimiento()).isEqualTo(sdf.parse("1997-02-20"));
+        assertThat(usuario.getAdminCheck()).isEqualTo(false);
     }
 
     @Test
@@ -57,6 +59,7 @@ public class UsuarioTest {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         usuario.setFechaNacimiento(sdf.parse("1997-02-20"));
+        usuario.setAdminCheck(false);
 
         // WHEN
 
@@ -69,6 +72,7 @@ public class UsuarioTest {
         assertThat(usuario.getNombre()).isEqualTo("Juan Gutiérrez");
         assertThat(usuario.getPassword()).isEqualTo("12345678");
         assertThat(usuario.getFechaNacimiento()).isEqualTo(sdf.parse("1997-02-20"));
+        assertThat(usuario.getAdminCheck()).isEqualTo(false);
     }
 
     @Test
@@ -95,6 +99,19 @@ public class UsuarioTest {
 
         // WHEN
         Usuario usuario = usuarioRepository.findByEmail("ana.garcia@gmail.com").orElse(null);
+
+        // THEN
+        assertThat(usuario.getNombre()).isEqualTo("Ana García");
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void buscarUsuarioAdmin() {
+        // GIVEN
+        // Datos cargados de datos-test.sql
+
+        // WHEN
+        Usuario usuario = usuarioRepository.findByAdminCheck(true).orElse(null);
 
         // THEN
         assertThat(usuario.getNombre()).isEqualTo("Ana García");
