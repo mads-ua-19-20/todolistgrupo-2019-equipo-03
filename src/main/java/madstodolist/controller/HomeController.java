@@ -1,5 +1,7 @@
 package madstodolist.controller;
 
+import madstodolist.authentication.ManagerUserSesion;
+import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Usuario;
 import madstodolist.service.UsuarioService;
@@ -16,6 +18,9 @@ public class HomeController {
 
     @Autowired
     UsuarioService usuarioService;
+
+    @Autowired
+    ManagerUserSesion managerUserSesion;
 
     @GetMapping("/")
     public String home() {
@@ -49,12 +54,13 @@ public class HomeController {
         if(id !=  null){
             Usuario usuario = usuarioService.findById(id);
 
+            managerUserSesion.comprobarUsuarioAdmin(usuario);
+
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
         }
         else{
-            model.addAttribute("nombreUsuario", "null");
-            model.addAttribute("idUsuario", "null");
+            throw new UsuarioNoLogeadoException();
         }
 
         model.addAttribute("usuarios", usuarioService.findAll());
@@ -69,6 +75,9 @@ public class HomeController {
 
         if(idLog !=  null){
             Usuario usuarioLog = usuarioService.findById(idLog);
+
+            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+
             Usuario usuarioDescrip = usuarioService.findById(idDescrip);
 
             model.addAttribute("nombreUsuario", usuarioLog.getNombre());
@@ -76,16 +85,7 @@ public class HomeController {
             model.addAttribute("usuario", usuarioDescrip);
         }
         else if(idLog == null){
-            model.addAttribute("nombreUsuario", "null");
-            model.addAttribute("idUsuario", "null");
-
-            Usuario usuario = usuarioService.findById(idDescrip);
-            if(usuario != null){
-                model.addAttribute("usuario", usuario);
-            }
-            else{
-                throw new UsuarioNotFoundException();
-            }
+            throw new UsuarioNoLogeadoException();
         }
 
         return "descripcionUsuario";
