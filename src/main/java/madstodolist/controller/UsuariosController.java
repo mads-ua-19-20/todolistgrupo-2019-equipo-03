@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class HomeController {
+public class UsuariosController {
 
     @Autowired
     UsuarioService usuarioService;

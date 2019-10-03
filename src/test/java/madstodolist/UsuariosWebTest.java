@@ -1,7 +1,7 @@
 package madstodolist;
 
 import madstodolist.authentication.ManagerUserSesion;
-import madstodolist.controller.HomeController;
+import madstodolist.controller.UsuariosController;
 import madstodolist.model.Usuario;
 import madstodolist.service.UsuarioService;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(HomeController.class)
+@WebMvcTest(UsuariosController.class)
 public class UsuariosWebTest {
     @Autowired
     private MockMvc mockMvc;
