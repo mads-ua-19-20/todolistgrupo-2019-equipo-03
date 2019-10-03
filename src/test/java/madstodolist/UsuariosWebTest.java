@@ -1,5 +1,6 @@
 package madstodolist;
 
+import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.controller.HomeController;
 import madstodolist.model.Usuario;
 import madstodolist.service.UsuarioService;
@@ -23,12 +24,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(HomeController.class)
-public class DescripcionWebTest {
+public class UsuariosWebTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private UsuarioService usuarioService;
+
+    @MockBean
+    private ManagerUserSesion managerUserSesion;
 
     @Test
     public void getUsuariosBotonDescripcion() throws Exception {
@@ -38,11 +42,13 @@ public class DescripcionWebTest {
         List<Usuario> lista = new ArrayList();
         lista.add(usuario);
 
+        when(usuarioService.findById(null)).thenReturn(usuario);
         when(usuarioService.findAll()).thenReturn(lista);
 
-        this.mockMvc.perform(get("/usuarios/"))
+        this.mockMvc.perform(get("/usuarios"))
                 .andDo(print())
-                .andExpect(content().string(containsString("Descripción")));
+                .andExpect(content().string(containsString("Descripción")))
+                .andExpect(content().string(containsString("domingo@ua.es")));
     }
 
     @Test
@@ -53,6 +59,7 @@ public class DescripcionWebTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         usuario.setFechaNacimiento(sdf.parse("2001-02-10"));
 
+        when(usuarioService.findById(null)).thenReturn(usuario);
         when(usuarioService.findById(1L)).thenReturn(usuario);
 
         this.mockMvc.perform(get("/usuarios/1"))

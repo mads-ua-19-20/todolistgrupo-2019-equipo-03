@@ -24,7 +24,7 @@ public class ManagerUserSesion {
 
     public void comprobarUsuarioAdmin(Usuario usuario){
         if(!usuario.getAdminCheck()){
-            throw  new UsuarioNoLogeadoException();
+            throw  new NoAdminAccessException();
         }
     }
 }

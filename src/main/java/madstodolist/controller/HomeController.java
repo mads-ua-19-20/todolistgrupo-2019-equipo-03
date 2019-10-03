@@ -51,19 +51,18 @@ public class HomeController {
 
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
 
-        if(id !=  null){
-            Usuario usuario = usuarioService.findById(id);
+        Usuario usuario = usuarioService.findById(id);
 
+        if(usuario !=  null){
             managerUserSesion.comprobarUsuarioAdmin(usuario);
 
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
+            model.addAttribute("usuarios", usuarioService.findAll());
         }
         else{
             throw new UsuarioNoLogeadoException();
         }
-
-        model.addAttribute("usuarios", usuarioService.findAll());
 
         return "usuarios";
     }
@@ -73,9 +72,9 @@ public class HomeController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
-        if(idLog !=  null){
-            Usuario usuarioLog = usuarioService.findById(idLog);
+        Usuario usuarioLog = usuarioService.findById(idLog);
 
+        if(usuarioLog !=  null){
             managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
 
             Usuario usuarioDescrip = usuarioService.findById(idDescrip);
