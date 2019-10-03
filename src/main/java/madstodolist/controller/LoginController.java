@@ -88,6 +88,7 @@ public class LoginController {
         usuario.setFechaNacimiento(registroData.getFechaNacimiento());
         usuario.setNombre(registroData.getNombre());
         usuario.setAdminCheck(registroData.isAdminCheck());
+        usuario.setBloqueado(false);
 
         usuarioService.registrar(usuario);
         return "redirect:/login";
