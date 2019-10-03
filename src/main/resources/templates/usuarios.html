@@ -29,7 +29,7 @@
                 <td>
                     <a class="btn btn-primary btn-xs" th:href="@{~/usuarios/{id}(id=${usuario.id})}"/>Descripción</a>
                     <a th:if="${usuario.bloqueado == false}" th:href="@{~/usuarios/{id}/gestion/{accion} (id=${usuario.id}, accion='bloquear')}" class="btn btn-danger" th:text="'Bloquear'"/>
-                    <a th:if="${usuario.bloqueado == true}" th:href="@{~/usuarios/{id}/gestion/{accion} (id=${usuario.id}, {accion='desbloquear'})}" class="btn btn-success" th:text="'Desbloquear'"/>
+                    <a th:if="${usuario.bloqueado == true}" th:href="@{~/usuarios/{id}/gestion/{accion} (id=${usuario.id}, accion='desbloquear')}" class="btn btn-success" th:text="'Desbloquear'"/>
                 </td>
                 <br>
             </tr>

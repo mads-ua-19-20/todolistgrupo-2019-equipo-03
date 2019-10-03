@@ -52,6 +52,24 @@ public class UsuarioService {
         else return usuarioRepository.save(usuario);
     }
 
+    @Transactional
+    public Usuario modificaUsuario(Long idUsuario, String accion) {
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new UsuarioServiceException("No existe usuario con id " + idUsuario);
+        }else {
+            if(accion.equals("bloquear")){
+                usuario.setBloqueado(true);
+            }
+            else if(accion.equals("desbloquear")){
+                usuario.setBloqueado(false);
+            }
+            usuarioRepository.save(usuario);
+        }
+
+        return usuario;
+    }
+
     @Transactional(readOnly = true)
     public Usuario findByEmail(String email) {
         return usuarioRepository.findByEmail(email).orElse(null);

@@ -89,4 +89,27 @@ public class UsuariosController {
 
         return "descripcionUsuario";
     }
+
+    @GetMapping("/usuarios/{id}/gestion/{accion}")
+    public String gestionarUsuario(@PathVariable(value="id") Long id, @PathVariable(value="accion") String accion, Model model, HttpSession session){
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuarioAdmin = usuarioService.findById(idLog);
+
+        if(id !=  null){
+            managerUserSesion.comprobarUsuarioAdmin(usuarioAdmin);
+
+            Usuario usuario = usuarioService.findById(id);
+            if (usuario == null) {
+                throw new UsuarioNotFoundException();
+            }
+
+            usuarioService.modificaUsuario(id, accion);
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+
+        return "redirect:/usuarios";
+    }
 }
