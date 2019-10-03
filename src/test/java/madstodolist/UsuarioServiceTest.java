@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,12 +38,14 @@ public class UsuarioServiceTest {
         UsuarioService.LoginStatus loginStatusOK = usuarioService.login("ana.garcia@gmail.com", "12345678");
         UsuarioService.LoginStatus loginStatusErrorPassword = usuarioService.login("ana.garcia@gmail.com", "000");
         UsuarioService.LoginStatus loginStatusNoUsuario = usuarioService.login("pepito.perez@gmail.com", "12345678");
+        UsuarioService.LoginStatus loginStatusUserBlocked = usuarioService.login("pepe.garcia@gmail.com", "12345678");
 
         // THEN
 
         assertThat(loginStatusOK).isEqualTo(UsuarioService.LoginStatus.LOGIN_OK);
         assertThat(loginStatusErrorPassword).isEqualTo(UsuarioService.LoginStatus.ERROR_PASSWORD);
         assertThat(loginStatusNoUsuario).isEqualTo(UsuarioService.LoginStatus.USER_NOT_FOUND);
+        assertThat(loginStatusUserBlocked).isEqualTo(UsuarioService.LoginStatus.USER_BLOCKED);
     }
 
     @Test
@@ -149,5 +152,33 @@ public class UsuarioServiceTest {
         // THEN
 
         assertThat(usuario.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void servicioModificarBloqueoUsuario() {
+        // GIVEN
+
+        // WHEN
+        usuarioService.modificaUsuario(1L, "bloquear");
+
+        // THEN
+
+        Usuario usuarioBaseDatos = usuarioService.findByEmail("ana.garcia@gmail.com");
+        assertThat(usuarioBaseDatos).isNotNull();
+        assertThat(usuarioBaseDatos.isBloqueado()).isEqualTo(true);
+    }
+
+    @Test
+    public void servicioModificarDesbloqueoUsuario() {
+        // GIVEN
+
+        // WHEN
+        usuarioService.modificaUsuario(1L, "desbloquear");
+
+        // THEN
+
+        Usuario usuarioBaseDatos = usuarioService.findByEmail("ana.garcia@gmail.com");
+        assertThat(usuarioBaseDatos).isNotNull();
+        assertThat(usuarioBaseDatos.isBloqueado()).isEqualTo(false);
     }
 }
