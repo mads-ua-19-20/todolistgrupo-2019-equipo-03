@@ -4,6 +4,7 @@ import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.controller.UsuariosController;
 import madstodolist.model.Usuario;
 import madstodolist.service.UsuarioService;
+import net.bytebuddy.matcher.BooleanMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,39 @@ public class UsuariosWebTest {
                 .andExpect(content().string(containsString("Nombre: Domingo Gallardo")))
                 .andExpect(content().string(containsString("E-mail: domingo@ua")))
                 .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))));
+    }
+
+    @Test
+    public void getUsuariosBotonBloquear() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+        usuario.setBloqueado(false);
+
+        List<Usuario> lista = new ArrayList();
+        lista.add(usuario);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(usuarioService.findAll()).thenReturn(lista);
+
+        this.mockMvc.perform(get("/usuarios"))
+                .andDo(print())
+                .andExpect(content().string(containsString("Bloquear")));
+    }
+
+    @Test
+    public void getUsuariosBotonDesbloquear() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+        usuario.setBloqueado(true);
+
+        List<Usuario> lista = new ArrayList();
+        lista.add(usuario);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(usuarioService.findAll()).thenReturn(lista);
+
+        this.mockMvc.perform(get("/usuarios"))
+                .andDo(print())
+                .andExpect(content().string(containsString("Desbloquear")));
     }
 }

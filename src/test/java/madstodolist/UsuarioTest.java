@@ -60,6 +60,7 @@ public class UsuarioTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         usuario.setFechaNacimiento(sdf.parse("1997-02-20"));
         usuario.setAdminCheck(false);
+        usuario.setBloqueado(false);
 
         // WHEN
 
@@ -73,6 +74,7 @@ public class UsuarioTest {
         assertThat(usuario.getPassword()).isEqualTo("12345678");
         assertThat(usuario.getFechaNacimiento()).isEqualTo(sdf.parse("1997-02-20"));
         assertThat(usuario.getAdminCheck()).isEqualTo(false);
+        assertThat(usuario.isBloqueado()).isEqualTo(false);
     }
 
     @Test

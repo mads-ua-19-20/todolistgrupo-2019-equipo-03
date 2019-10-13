@@ -16,7 +16,7 @@ public class UsuarioService {
 
     Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD}
+    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD, USER_BLOCKED}
 
     private UsuarioRepository usuarioRepository;
 
@@ -32,6 +32,8 @@ public class UsuarioService {
             return LoginStatus.USER_NOT_FOUND;
         } else if (!usuario.get().getPassword().equals(password)) {
             return LoginStatus.ERROR_PASSWORD;
+        } else if(usuario.get().isBloqueado()){
+            return LoginStatus.USER_BLOCKED;
         } else {
             return LoginStatus.LOGIN_OK;
         }
@@ -50,6 +52,24 @@ public class UsuarioService {
         else if (usuario.getPassword() == null)
             throw new UsuarioServiceException("El usuario no tiene password");
         else return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public Usuario modificaUsuario(Long idUsuario, String accion) {
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new UsuarioServiceException("No existe usuario con id " + idUsuario);
+        }else {
+            if(accion.equals("bloquear")){
+                usuario.setBloqueado(true);
+            }
+            else if(accion.equals("desbloquear")){
+                usuario.setBloqueado(false);
+            }
+            usuarioRepository.save(usuario);
+        }
+
+        return usuario;
     }
 
     @Transactional(readOnly = true)
