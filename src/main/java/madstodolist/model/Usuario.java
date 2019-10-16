@@ -3,10 +3,10 @@ package madstodolist.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "usuarios")
@@ -33,7 +33,7 @@ public class Usuario implements Serializable {
     // CUIDADO!! No es recomendable hacerlo en aquellos casos en los
     // que la relación pueda traer a memoria una gran cantidad de entidades
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
-    List<Tarea> tareas = new ArrayList<Tarea>();
+    Set<Tarea> tareas = new HashSet<>();
 
     // Constructor vacío necesario para JPA/Hibernate.
     // Lo hacemos privado para que no se pueda usar desde el código de la aplicación. Para crear un
@@ -86,11 +86,11 @@ public class Usuario implements Serializable {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public List<Tarea> getTareas() {
+    public Set<Tarea> getTareas() {
         return tareas;
     }
 
-    public void setTareas(List<Tarea> tareas) {
+    public void setTareas(Set<Tarea> tareas) {
         this.tareas = tareas;
     }
 

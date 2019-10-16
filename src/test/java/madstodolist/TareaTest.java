@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -111,7 +111,7 @@ public class TareaTest {
         Usuario usuario = usuarioRepository.findById(1L).orElse(null);
 
         // WHEN
-        List<Tarea> tareas = usuario.getTareas();
+        Set<Tarea> tareas = usuario.getTareas();
 
         // THEN
 
@@ -128,7 +128,7 @@ public class TareaTest {
 
         // WHEN
 
-        List<Tarea> tareas = usuario.getTareas();
+        Set<Tarea> tareas = usuario.getTareas();
         Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
         tareaRepository.save(tarea);
 

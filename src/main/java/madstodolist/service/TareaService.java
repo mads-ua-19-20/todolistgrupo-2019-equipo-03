@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -43,7 +45,9 @@ public class TareaService {
         if (usuario == null) {
             throw new TareaServiceException("Usuario " + idUsuario + " no existe al listar tareas ");
         }
-        return usuario.getTareas();
+        List<Tarea> tareas = new ArrayList(usuario.getTareas());
+        Collections.sort(tareas, (a, b) -> a.getId() < b.getId() ? -1 : a.getId() == b.getId() ? 0 : 1);
+        return tareas;
     }
 
     @Transactional(readOnly = true)
