@@ -1,0 +1,13 @@
+language: java
+
+branches:
+  only:
+    - master
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE mads_test;'
+
+script: ./mvnw -DargLine="-Dspring.profiles.active=mysql" test
