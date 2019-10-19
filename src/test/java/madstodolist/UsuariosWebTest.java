@@ -49,7 +49,7 @@ public class UsuariosWebTest {
         this.mockMvc.perform(get("/usuarios"))
                 .andDo(print())
                 .andExpect(content().string(containsString("Descripción")))
-                .andExpect(content().string(containsString("domingo@ua.es")));
+                .andExpect(content().string(containsString("a@ua.es")));
     }
 
     @Test
