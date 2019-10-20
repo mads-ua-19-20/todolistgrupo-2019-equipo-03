@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -111,5 +113,18 @@ public class EquipoTest {
         assertThat(equipo.getUsuarios()).contains(usuario);
         assertThat(usuario.getEquipos()).hasSize(1);
         assertThat(usuario.getEquipos()).contains(equipo);
+    }
+
+    @Test
+    @Transactional
+    public void comprobarFindAll() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        // WHEN
+        List<Equipo> equipos = equipoRepository.findAll();
+
+        // THEN
+        assertThat(equipos).hasSize(2);
     }
 }
