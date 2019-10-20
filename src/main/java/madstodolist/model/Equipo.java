@@ -16,7 +16,10 @@ public class Equipo {
     @NotNull
     private String nombre;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "equipo_usuario",
+        joinColumns = { @JoinColumn(name = "fk_equipo") },
+        inverseJoinColumns = {@JoinColumn(name = "fk_usuario")})
     Set<Usuario> usuarios = new HashSet<>();
 
     private Equipo(){};
