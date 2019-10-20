@@ -36,4 +36,29 @@ public class EquipoTest {
         // THEN
         assertThat(equipo.getId()).isNotNull();
     }
+
+    @Test
+    public void comprobarIgualdadEquipos() {
+        // GIVEN
+        // Creamos tres equipos sin id, sólo con el nombre
+        Equipo equipo1 = new Equipo("Proyecto Cobalto");
+        Equipo equipo2 = new Equipo("Proyecto Níquel");
+        Equipo equipo3 = new Equipo("Proyecto Níquel");
+
+        // THEN
+        // Comprobamos igualdad basada en el atributo nombre
+        assertThat(equipo1).isNotEqualTo(equipo2);
+        assertThat(equipo2).isEqualTo(equipo3);
+
+        // WHEN
+        // Añadimos identificadores y comprobamos igualdad por identificadores
+        equipo1.setId(1L);
+        equipo2.setId(1L);
+        equipo3.setId(2L);
+
+        // THEN
+        // Comprobamos igualdad basada en el atributo nombre
+        assertThat(equipo1).isEqualTo(equipo2);
+        assertThat(equipo2).isNotEqualTo(equipo3);
+    }
 }
