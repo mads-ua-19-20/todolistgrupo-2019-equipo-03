@@ -2,6 +2,7 @@ package madstodolist;
 
 import madstodolist.model.Equipo;
 import madstodolist.model.EquipoRepository;
+import madstodolist.model.Usuario;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,5 +76,19 @@ public class EquipoTest {
         assertThat(equipo).isNotNull();
         assertThat(equipo.getId()).isEqualTo(1L);
         assertThat(equipo.getNombre()).isEqualTo("Proyecto Cobalto");
+    }
+
+    @Test
+    public void relaciónMuchosAMuchosVacia() {
+        // GIVEN
+
+        Equipo equipo = new Equipo("Proyecto Cobalto");
+        Usuario usuario = new Usuario("prueba@gmail.com");
+
+        // WHEN
+        // THEN
+
+        assertThat(equipo.getUsuarios()).isEmpty();
+        assertThat(usuario.getEquipos()).isEmpty();
     }
 }

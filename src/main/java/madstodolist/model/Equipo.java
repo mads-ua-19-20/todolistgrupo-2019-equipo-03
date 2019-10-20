@@ -2,7 +2,9 @@ package madstodolist.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "equipos")
@@ -13,6 +15,9 @@ public class Equipo {
     private Long id;
     @NotNull
     private String nombre;
+
+    @ManyToMany
+    Set<Usuario> usuarios = new HashSet<>();
 
     private Equipo(){};
 
@@ -30,6 +35,10 @@ public class Equipo {
 
     public void setId(Long id){
         this.id = id;
+    }
+
+    public Set<Usuario> getUsuarios() {
+        return usuarios;
     }
 
     @Override
