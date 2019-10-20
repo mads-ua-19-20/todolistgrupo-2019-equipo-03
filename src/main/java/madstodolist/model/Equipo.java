@@ -14,6 +14,8 @@ public class Equipo {
     @NotNull
     private String nombre;
 
+    private Equipo(){};
+
     public Equipo(String nombre){
         this.nombre = nombre;
     }
