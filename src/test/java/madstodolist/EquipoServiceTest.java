@@ -71,4 +71,21 @@ public class EquipoServiceTest {
         assertThat(usuario.getEquipos()).hasSize(1);
     }
 
+    @Test
+    public void obtenerUsuariosEquipo() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        // WHEN
+        List<Usuario> usuarios = equipoService.usuariosEquipo(1L);
+
+        // THEN
+        assertThat(usuarios).hasSize(1);
+        assertThat(usuarios.get(0).getEmail()).isEqualTo("ana.garcia@gmail.com");
+        // Comprobamos que la relación entre usuarios y equipos es eager
+        // Primero comprobamos que la colección de equipos tiene 1 elemento
+        assertThat(usuarios.get(0).getEquipos()).hasSize(1);
+        // Y después que el elemento es el equipo Proyecto Cobalto
+        assertThat(usuarios.get(0).getEquipos().stream().findFirst().get().getNombre()).isEqualTo("Proyecto Cobalto");
+    }
 }
