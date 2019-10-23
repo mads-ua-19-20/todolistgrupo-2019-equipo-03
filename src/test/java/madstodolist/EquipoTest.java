@@ -99,6 +99,7 @@ public class EquipoTest {
     }
 
     @Test
+    @Transactional
     public void comprobarRelacionBaseDatos() {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql

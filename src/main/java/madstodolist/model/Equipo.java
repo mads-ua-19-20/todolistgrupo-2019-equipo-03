@@ -16,7 +16,7 @@ public class Equipo {
     @NotNull
     private String nombre;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "equipo_usuario",
         joinColumns = { @JoinColumn(name = "fk_equipo") },
         inverseJoinColumns = {@JoinColumn(name = "fk_usuario")})
