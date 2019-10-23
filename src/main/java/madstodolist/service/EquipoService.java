@@ -22,4 +22,9 @@ public class EquipoService {
     public List<Equipo> findAllOrderedByName(){
         return equipoRepository.findByOrderByNombreAsc();
     }
+
+    @Transactional(readOnly = true)
+    public Equipo findById(Long equipoId) {
+        return equipoRepository.findById(equipoId).orElse(null);
+    }
 }
