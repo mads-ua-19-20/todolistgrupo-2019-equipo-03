@@ -1,5 +1,6 @@
 package madstodolist.controller;
 
+import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Usuario;
 import madstodolist.service.UsuarioService;
@@ -26,8 +27,7 @@ public class EquipoController {
             model.addAttribute("idUsuario", usuario.getId());
         }
         else{
-            model.addAttribute("nombreUsuario", "null");
-            model.addAttribute("idUsuario", "null");
+            throw new UsuarioNoLogeadoException();
         }
 
         return "equipos";
