@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Equipos')"></head>
+
+<body>
+    <div th:replace="fragments::barra-menu (nombreUsuario=${nombreUsuario}, id=${idUsuario})"/>
+    <div class="container-fluid">
+        <h2 th:text="'Listado de tareas de equipos'"></h2>
+    </div>
+</body>
+</html>
