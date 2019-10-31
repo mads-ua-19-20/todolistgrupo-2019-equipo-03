@@ -26,9 +26,9 @@ public class EquipoController {
     @GetMapping("/equipos")
     public String listadoEquipos(Model model, HttpSession session) {
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuario = usuarioService.findById(id);
 
-        if(id !=  null){
-            Usuario usuario = usuarioService.findById(id);
+        if(usuario !=  null){
             List<Equipo> equipos = equipoService.findAllOrderedByName();
 
             model.addAttribute("nombreUsuario", usuario.getNombre());
@@ -45,9 +45,9 @@ public class EquipoController {
     @GetMapping("equipos/{id}/usuarios")
     public String getUsuariosEquipo(@PathVariable(value="id") Long idEquipo, Model model, HttpSession session){
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuario = usuarioService.findById(id);
 
-        if(id !=  null){
-            Usuario usuario = usuarioService.findById(id);
+        if(usuario !=  null){
             Equipo equipo = equipoService.findById(idEquipo);
             if(equipo == null){
                 throw new EquipoNotFoundException();
