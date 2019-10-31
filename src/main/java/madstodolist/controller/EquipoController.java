@@ -1,7 +1,7 @@
 package madstodolist.controller;
 
 import madstodolist.authentication.UsuarioNoLogeadoException;
-import madstodolist.controller.exception.UsuarioNotFoundException;
+import madstodolist.controller.exception.EquipoNotFoundException;
 import madstodolist.model.Equipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -39,5 +40,28 @@ public class EquipoController {
         }
 
         return "equipos";
+    }
+
+    @GetMapping("equipos/{id}/usuarios")
+    public String getUsuariosEquipo(@PathVariable(value="id") Long idEquipo, Model model, HttpSession session){
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        if(id !=  null){
+            Usuario usuario = usuarioService.findById(id);
+            Equipo equipo = equipoService.findById(idEquipo);
+            if(equipo == null){
+                throw new EquipoNotFoundException();
+            }
+            List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
+            model.addAttribute("usuariosEquipo", usuariosEquipo);
+            model.addAttribute("nombreEquipo", equipo.getNombre());
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+
+        return "usuariosEquipo";
     }
 }
