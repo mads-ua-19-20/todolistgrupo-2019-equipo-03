@@ -99,4 +99,18 @@ public class EquipoServiceTest {
         //THEN
         assertThat(equipoService.findAll()).contains(equipo);
     }
+
+    @Test
+    @Transactional
+    public void testAgregarUsuarioEquipo(){
+        //GIVEN
+        Equipo equipo = equipoService.findById(2L);
+        Usuario usuario = usuarioService.findById(2L);
+
+        //WHEN
+        equipoService.agregarUsuarioEquipo(2L, 2L);
+
+        //THEN
+        assertThat(equipo.getUsuarios()).contains(usuario);
+    }
 }
