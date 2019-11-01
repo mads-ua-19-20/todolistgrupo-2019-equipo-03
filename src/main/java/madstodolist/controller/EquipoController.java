@@ -1,5 +1,6 @@
 package madstodolist.controller;
 
+import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.EquipoNotFoundException;
 import madstodolist.model.Equipo;
@@ -10,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -22,6 +26,9 @@ public class EquipoController {
 
     @Autowired
     EquipoService equipoService;
+
+    @Autowired
+    ManagerUserSesion managerUserSesion;
 
     @GetMapping("/equipos")
     public String listadoEquipos(Model model, HttpSession session) {
@@ -53,10 +60,13 @@ public class EquipoController {
                 throw new EquipoNotFoundException();
             }
             List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
+            boolean apuntado = usuariosEquipo.contains(usuario);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("usuariosEquipo", usuariosEquipo);
             model.addAttribute("nombreEquipo", equipo.getNombre());
+            model.addAttribute("idEquipo", equipo.getId());
+            model.addAttribute("apuntado", apuntado);
         }
         else{
             throw new UsuarioNoLogeadoException();
@@ -64,4 +74,59 @@ public class EquipoController {
 
         return "usuariosEquipo";
     }
+
+    @GetMapping("/equipos/nuevo")
+    public String formNuevoEquipo(@ModelAttribute EquipoData equipoData, Model model,
+                                  HttpSession session) {
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuario = usuarioService.findById(id);
+
+        if(usuario != null){
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+        return "formNuevoEquipo";
+    }
+
+    @PostMapping("/equipos/nuevo")
+    public String nuevoEquipo(@ModelAttribute EquipoData equipoData,
+                             Model model, RedirectAttributes flash,
+                             HttpSession session) {
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuario = usuarioService.findById(id);
+
+        if(usuario != null){
+            equipoService.nuevoEquipo(equipoData.getNombre());
+            flash.addFlashAttribute("mensaje", "Equipo creado correctamente");
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+        return "redirect:/equipos";
+    }
+
+    @GetMapping("equipos/{id}/{accion}/usuario/{idUsuario}")
+    public String pertenenciaEquipo(@PathVariable(value="id") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario,
+                                    @PathVariable(value="accion") String accion, Model model, HttpSession session){
+        Equipo equipo = equipoService.findById(idEquipo);
+
+        if(equipo == null){
+            throw new EquipoNotFoundException();
+        }
+
+        managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
+
+        if(accion.equals("agregar")){
+            equipoService.agregarUsuarioEquipo(idEquipo, idUsuario);
+        }
+        else if(accion.equals("eliminar")){
+            equipoService.eliminarUsuarioEquipo(idEquipo, idUsuario);
+        }
+
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
+
 }
