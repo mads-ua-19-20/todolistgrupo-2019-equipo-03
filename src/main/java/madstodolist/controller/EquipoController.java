@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -73,11 +75,20 @@ public class EquipoController {
         Usuario usuario = usuarioService.findById(id);
 
         if(usuario != null){
-
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
         }
         else{
             throw new UsuarioNoLogeadoException();
         }
         return "formNuevoEquipo";
+    }
+
+    @PostMapping("/equipos/nuevo")
+    public String nuevoEquipo(@ModelAttribute EquipoData equipoData,
+                             Model model, RedirectAttributes flash,
+                             HttpSession session) {
+
+        return "redirect:/equipos";
     }
 }
