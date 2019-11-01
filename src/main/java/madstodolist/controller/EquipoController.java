@@ -88,7 +88,16 @@ public class EquipoController {
     public String nuevoEquipo(@ModelAttribute EquipoData equipoData,
                              Model model, RedirectAttributes flash,
                              HttpSession session) {
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuario = usuarioService.findById(id);
 
+        if(usuario != null){
+            equipoService.nuevoEquipo(equipoData.getNombre());
+            flash.addFlashAttribute("mensaje", "Equipo creado correctamente");
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
         return "redirect:/equipos";
     }
 }
