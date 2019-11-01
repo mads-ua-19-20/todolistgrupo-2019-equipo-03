@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -87,5 +88,15 @@ public class EquipoServiceTest {
         assertThat(usuarios.get(0).getEquipos()).hasSize(1);
         // Y después que el elemento es el equipo Proyecto Cobalto
         assertThat(usuarios.get(0).getEquipos().stream().findFirst().get().getNombre()).isEqualTo("Proyecto Cobalto");
+    }
+
+    @Test
+    @Transactional
+    public void testNuevoEquipo(){
+        //WHEN
+        Equipo equipo = equipoService.nuevoEquipo("Equipo de prueba");
+
+        //THEN
+        assertThat(equipoService.findAll().contains(equipo));
     }
 }
