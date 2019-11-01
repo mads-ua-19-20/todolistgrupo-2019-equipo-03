@@ -128,4 +128,18 @@ public class EquipoServiceTest {
             equipoService.agregarUsuarioEquipo(0L, 2L);
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    @Transactional
+    public void testAgregarUsuarioInexistenteEquipo(){
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.agregarUsuarioEquipo(1L, 0L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
 }
