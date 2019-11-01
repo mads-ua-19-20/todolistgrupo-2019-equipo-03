@@ -56,10 +56,13 @@ public class EquipoController {
                 throw new EquipoNotFoundException();
             }
             List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
+            boolean apuntado = usuariosEquipo.contains(usuario);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("usuariosEquipo", usuariosEquipo);
             model.addAttribute("nombreEquipo", equipo.getNombre());
+            model.addAttribute("idEquipo", equipo.getId());
+            model.addAttribute("apuntado", apuntado);
         }
         else{
             throw new UsuarioNoLogeadoException();
@@ -100,4 +103,6 @@ public class EquipoController {
         }
         return "redirect:/equipos";
     }
+
+
 }
