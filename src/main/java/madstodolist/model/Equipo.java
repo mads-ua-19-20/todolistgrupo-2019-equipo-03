@@ -44,6 +44,10 @@ public class Equipo {
         return usuarios;
     }
 
+    public void setUsuarios(Set<Usuario> usuarios){
+        this.usuarios = usuarios;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

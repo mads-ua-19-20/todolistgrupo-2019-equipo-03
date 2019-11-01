@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EquipoService {
@@ -48,6 +50,25 @@ public class EquipoService {
 
         equipo.getUsuarios().add(usuario);
         usuario.getEquipos().add(equipo);
+    }
+
+    @Transactional
+    public void eliminarUsuarioEquipo(Long idEquipo, Long idUsuario){
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        List<Usuario> listaUsuariosEquipo = usuariosEquipo(idEquipo);
+        boolean done = false;
+
+        for(int i = 0; i<listaUsuariosEquipo.size() && !done; i++){
+            if(listaUsuariosEquipo.get(i).getId() == idUsuario){
+                listaUsuariosEquipo.remove(i);
+                done = true;
+            }
+        }
+        if(done){
+            Set<Usuario> listaActualizada = new HashSet<>();
+            listaActualizada.addAll(listaUsuariosEquipo);
+            equipo.setUsuarios(listaActualizada);
+        }
     }
 
     @Transactional(readOnly = true)
