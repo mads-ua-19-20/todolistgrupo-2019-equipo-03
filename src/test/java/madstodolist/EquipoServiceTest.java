@@ -198,4 +198,18 @@ public class EquipoServiceTest {
             equipoService.eliminarUsuarioEquipo(0L, 1L);
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    @Transactional
+    public void testEliminaUsuarioInexistenteEquipo(){
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.eliminarUsuarioEquipo(1L, 0L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
 }

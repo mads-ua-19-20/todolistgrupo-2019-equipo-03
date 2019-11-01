@@ -60,6 +60,10 @@ public class EquipoService {
                     " no existe al intentar eliminarle un usuario");
         }
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new EquipoServiceException("Usuario " + idUsuario +
+                    " no existe al intentar eliminarlo de la lista del equipo elegido");
+        }
         List<Usuario> listaUsuariosEquipo = usuariosEquipo(idEquipo);
         List<Equipo> listaEquiposUsuario = new ArrayList<>(usuario.getEquipos());
         boolean done = false;
