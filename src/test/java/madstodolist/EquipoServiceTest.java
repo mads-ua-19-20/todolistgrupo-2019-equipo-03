@@ -170,4 +170,18 @@ public class EquipoServiceTest {
         //THEN
         assertThat(equipo.getUsuarios()).doesNotContain(usuario);
     }
+
+    @Test
+    @Transactional
+    public void testEliminarUsuarioEquipo2(){
+        //GIVEN
+        Equipo equipo = equipoService.findById(1L);
+        Usuario usuario = usuarioService.findById(1L);
+
+        //WHEN
+        equipoService.eliminarUsuarioEquipo(1L, 1L);
+
+        //THEN
+        assertThat(usuario.getEquipos()).doesNotContain(equipo);
+    }
 }

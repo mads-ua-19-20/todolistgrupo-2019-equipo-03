@@ -55,7 +55,9 @@ public class EquipoService {
     @Transactional
     public void eliminarUsuarioEquipo(Long idEquipo, Long idUsuario){
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         List<Usuario> listaUsuariosEquipo = usuariosEquipo(idEquipo);
+        List<Equipo> listaEquiposUsuario = new ArrayList<>(usuario.getEquipos());
         boolean done = false;
 
         for(int i = 0; i<listaUsuariosEquipo.size() && !done; i++){
@@ -68,6 +70,19 @@ public class EquipoService {
             Set<Usuario> listaActualizada = new HashSet<>();
             listaActualizada.addAll(listaUsuariosEquipo);
             equipo.setUsuarios(listaActualizada);
+            done = false;
+        }
+
+        for(int i = 0; i<listaEquiposUsuario.size() && !done; i++){
+            if(listaEquiposUsuario.get(i).getId() == idEquipo){
+                listaEquiposUsuario.remove(i);
+                done = true;
+            }
+        }
+        if(done){
+            Set<Equipo> listaActualizada = new HashSet<>();
+            listaActualizada.addAll(listaEquiposUsuario);
+            usuario.setEquipos(listaActualizada);
         }
     }
 
