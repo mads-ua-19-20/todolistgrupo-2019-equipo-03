@@ -1,5 +1,6 @@
 package madstodolist.controller;
 
+import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.EquipoNotFoundException;
 import madstodolist.model.Equipo;
@@ -25,6 +26,9 @@ public class EquipoController {
 
     @Autowired
     EquipoService equipoService;
+
+    @Autowired
+    ManagerUserSesion managerUserSesion;
 
     @GetMapping("/equipos")
     public String listadoEquipos(Model model, HttpSession session) {
@@ -104,5 +108,25 @@ public class EquipoController {
         return "redirect:/equipos";
     }
 
+    @GetMapping("equipos/{id}/{accion}/usuario/{idUsuario}")
+    public String pertenenciaEquipo(@PathVariable(value="id") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario,
+                                    @PathVariable(value="accion") String accion, Model model, HttpSession session){
+        Equipo equipo = equipoService.findById(idEquipo);
+
+        if(equipo == null){
+            throw new EquipoNotFoundException();
+        }
+
+        managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
+
+        if(accion.equals("agregar")){
+            equipoService.agregarUsuarioEquipo(idEquipo, idUsuario);
+        }
+        else if(accion.equals("eliminar")){
+            equipoService.eliminarUsuarioEquipo(idEquipo, idUsuario);
+        }
+
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
 
 }

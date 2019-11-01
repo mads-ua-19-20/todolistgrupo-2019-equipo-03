@@ -14,7 +14,7 @@
             <a th:if="${apuntado == false}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='agregar', idUsuario=${idUsuario})}"
                class="btn btn-success" th:text="'Añadirme al equipo'"/>
 
-            <a th:if="${apuntado == true}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='elimnar', idUsuario=${idUsuario})}"
+            <a th:if="${apuntado == true}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='eliminar', idUsuario=${idUsuario})}"
                class="btn btn-danger" th:text="'Eliminarme del equipo'"/>
         </div>
         <div class="row mt-3">
@@ -38,5 +38,6 @@
             </div>
         </div>
     </div>
+    <div th:replace="fragments::javascript"/>
 </body>
 </html>
