@@ -97,6 +97,6 @@ public class EquipoServiceTest {
         Equipo equipo = equipoService.nuevoEquipo("Equipo de prueba");
 
         //THEN
-        assertThat(equipoService.findAll().contains(equipo));
+        assertThat(equipoService.findAll()).contains(equipo);
     }
 }

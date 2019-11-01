@@ -21,17 +21,6 @@ public class EquipoService {
         this.equipoRepository = equipoRepository;
     }
 
-    /*@Transactional
-    public Tarea nuevaTareaUsuario(Long idUsuario, String tituloTarea) {
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
-        if (usuario == null) {
-            throw new TareaServiceException("Usuario " + idUsuario + " no existe al crear tarea " + tituloTarea);
-        }
-        Tarea tarea = new Tarea(usuario, tituloTarea);
-        tareaRepository.save(tarea);
-        return tarea;
-    }*/
-
     @Transactional
     public Equipo nuevoEquipo(String nombre){
         Equipo equipo = new Equipo(nombre);
