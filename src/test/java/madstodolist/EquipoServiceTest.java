@@ -184,4 +184,18 @@ public class EquipoServiceTest {
         //THEN
         assertThat(usuario.getEquipos()).doesNotContain(equipo);
     }
+
+    @Test
+    @Transactional
+    public void testEliminaUsuarioEquipoInexistente(){
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.eliminarUsuarioEquipo(0L, 1L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
 }

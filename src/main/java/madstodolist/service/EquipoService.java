@@ -55,6 +55,10 @@ public class EquipoService {
     @Transactional
     public void eliminarUsuarioEquipo(Long idEquipo, Long idUsuario){
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if (equipo == null) {
+            throw new EquipoServiceException("Equipo " + idEquipo +
+                    " no existe al intentar eliminarle un usuario");
+        }
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         List<Usuario> listaUsuariosEquipo = usuariosEquipo(idEquipo);
         List<Equipo> listaEquiposUsuario = new ArrayList<>(usuario.getEquipos());
