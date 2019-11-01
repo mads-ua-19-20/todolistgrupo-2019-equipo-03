@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpSession;
@@ -63,5 +64,20 @@ public class EquipoController {
         }
 
         return "usuariosEquipo";
+    }
+
+    @GetMapping("/equipos/nuevo")
+    public String formNuevoEquipo(@ModelAttribute EquipoData equipoData, Model model,
+                                  HttpSession session) {
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuario = usuarioService.findById(id);
+
+        if(usuario != null){
+
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+        return "formNuevoEquipo";
     }
 }
