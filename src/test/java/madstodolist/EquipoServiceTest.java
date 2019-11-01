@@ -142,4 +142,18 @@ public class EquipoServiceTest {
             equipoService.agregarUsuarioEquipo(1L, 0L);
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    @Transactional
+    public void testAgregarUsuarioEquipo2(){
+        //GIVEN
+        Equipo equipo = equipoService.findById(2L);
+        Usuario usuario = usuarioService.findById(2L);
+
+        //WHEN
+        equipoService.agregarUsuarioEquipo(2L, 2L);
+
+        //THEN
+        assertThat(usuario.getEquipos()).contains(equipo);
+    }
 }

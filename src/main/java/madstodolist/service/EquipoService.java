@@ -47,6 +47,7 @@ public class EquipoService {
         }
 
         equipo.getUsuarios().add(usuario);
+        usuario.getEquipos().add(equipo);
     }
 
     @Transactional(readOnly = true)
