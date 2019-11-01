@@ -35,8 +35,13 @@ public class EquipoService {
     @Transactional
     public void agregarUsuarioEquipo(Long idEquipo, Long idUsuario){
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if (equipo == null) {
+            throw new EquipoServiceException("Equipo " + idEquipo +
+                    " no existe al intentar añadirlo al equipo elegido");
+        }
+
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
-        System.out.println("EQUIPO: " + equipo + " USUARIO: " + usuario);
+
         equipo.getUsuarios().add(usuario);
     }
 

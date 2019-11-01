@@ -3,6 +3,7 @@ package madstodolist;
 import madstodolist.model.Equipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
+import madstodolist.service.EquipoServiceException;
 import madstodolist.service.UsuarioService;
 import org.hibernate.LazyInitializationException;
 import org.junit.Test;
@@ -112,5 +113,19 @@ public class EquipoServiceTest {
 
         //THEN
         assertThat(equipo.getUsuarios()).contains(usuario);
+    }
+
+    @Test
+    @Transactional
+    public void testAgregarUsuarioEquipoInexistente(){
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.agregarUsuarioEquipo(0L, 2L);
+        }).isInstanceOf(EquipoServiceException.class);
     }
 }
