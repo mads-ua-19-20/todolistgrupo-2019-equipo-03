@@ -107,6 +107,12 @@ public class EquipoService {
         return equipo;
     }
 
+    @Transactional
+    public void borraEquipo(Long idEquipo){
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        equipoRepository.delete(equipo);
+    }
+
     @Transactional(readOnly = true)
     public List<Equipo> findAllOrderedByName(){
         return equipoRepository.findByOrderByNombreAsc();

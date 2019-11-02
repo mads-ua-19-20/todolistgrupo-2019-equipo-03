@@ -246,4 +246,16 @@ public class EquipoServiceTest {
             equipoService.modificaEquipo(0L, "Equipo B");
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    @Transactional
+    public void eliminarEquipo(){
+        // GIVEN
+        Equipo equipo = equipoService.findById(1L);
+
+        // WHEN
+        equipoService.borraEquipo(equipo.getId());
+        // THEN
+        assertThat(equipoService.findById(equipo.getId())).isNull();
+    }
 }
