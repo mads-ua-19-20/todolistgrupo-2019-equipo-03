@@ -130,4 +130,29 @@ public class EquipoController {
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
 
+    @GetMapping("/equipos/{id}/editar")
+    public String formEditaEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData,
+                                 Model model, HttpSession session) {
+
+        Equipo equipo = equipoService.findById(idEquipo);
+        if (equipo == null) {
+            throw new EquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        Usuario usuarioLog = usuarioService.findById(idLog);
+        if(usuarioLog !=  null) {
+            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+            model.addAttribute("nombreUsuario", usuarioLog.getNombre());
+            model.addAttribute("idUsuario", usuarioLog.getId());
+            model.addAttribute("equipo", equipo);
+            equipo.setNombre(equipo.getNombre());
+        }
+        else if(idLog == null){
+            throw new UsuarioNoLogeadoException();
+        }
+
+        return "formEditarEquipo";
+    }
+
 }

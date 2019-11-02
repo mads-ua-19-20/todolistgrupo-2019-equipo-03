@@ -30,7 +30,7 @@
                             <a th:text="${equipo.nombre}" th:href="@{~/equipos/{id}/usuarios (id=${equipo.id})}" />
                         </td>
                         <td th:if="${admin == true}">
-                            <a class="btn btn-primary btn-xs" >editar</a>
+                            <a class="btn btn-primary btn-xs" th:href="@{~/equipos/{id}/editar(id=${equipo.id})}">editar</a>
                             <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;">borrar</a>
                         </td>
                     </tr>
