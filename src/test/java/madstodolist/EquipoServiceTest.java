@@ -214,6 +214,7 @@ public class EquipoServiceTest {
     }
 
     @Test
+    @Transactional
     public void cambiarNombreEquipo(){
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
