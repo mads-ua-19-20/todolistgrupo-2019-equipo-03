@@ -3,6 +3,7 @@ package madstodolist.controller;
 import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.EquipoNotFoundException;
+import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
@@ -10,10 +11,7 @@ import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -41,6 +39,7 @@ public class EquipoController {
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("equipos", equipos);
+            model.addAttribute("admin", usuario.getAdminCheck());
         }
         else{
             throw new UsuarioNoLogeadoException();
@@ -129,4 +128,83 @@ public class EquipoController {
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
 
+    @GetMapping("/equipos/{id}/editar")
+    public String formEditaEquipo(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData,
+                                 Model model, HttpSession session) {
+
+        Equipo equipo = equipoService.findById(idEquipo);
+        if (equipo == null) {
+            throw new EquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(idLog);
+
+        Usuario usuarioLog = usuarioService.findById(idLog);
+
+        if(usuarioLog !=  null) {
+            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+            model.addAttribute("nombreUsuario", usuarioLog.getNombre());
+            model.addAttribute("idUsuario", usuarioLog.getId());
+            model.addAttribute("equipo", equipo);
+            equipo.setNombre(equipo.getNombre());
+        }
+        else{
+            throw new UsuarioNotFoundException();
+        }
+
+        return "formEditarEquipo";
+    }
+
+    @PostMapping("/equipos/{id}/editar")
+    public String grabaEquipoModificado(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData,
+                                       Model model, RedirectAttributes flash, HttpSession session) {
+        Equipo equipo = equipoService.findById(idEquipo);
+        if (equipo == null) {
+            throw new EquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(idLog);
+
+        Usuario usuarioLog = usuarioService.findById(idLog);
+        if(usuarioLog !=  null) {
+            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+
+            equipoService.modificaEquipo(idEquipo, equipoData.getNombre());
+            flash.addFlashAttribute("mensaje", "Equipo modificado correctamente");
+        }
+        else{
+            throw new UsuarioNotFoundException();
+        }
+
+        return "redirect:/equipos";
+    }
+
+    @DeleteMapping("/equipos/{id}")
+    @ResponseBody
+    public String borrarEquipo(@PathVariable(value="id") Long idEquipo, RedirectAttributes flash, HttpSession session) {
+        Equipo equipo = equipoService.findById(idEquipo);
+        if (equipo == null) {
+            throw new EquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(idLog);
+
+        Usuario usuarioLog = usuarioService.findById(idLog);
+        if(usuarioLog !=  null) {
+            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+
+            equipoService.borraEquipo(idEquipo);
+        }
+        else{
+            throw new UsuarioNotFoundException();
+        }
+
+        return "";
+    }
 }

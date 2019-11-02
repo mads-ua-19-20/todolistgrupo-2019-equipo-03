@@ -27,4 +27,10 @@ public class ManagerUserSesion {
             throw  new NoAdminAccessException();
         }
     }
+
+    public void comprobarIdLogNotNull(Long id){
+        if(id == null){
+            throw new UsuarioNoLogeadoException();
+        }
+    }
 }

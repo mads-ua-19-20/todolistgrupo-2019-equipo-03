@@ -20,8 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -191,5 +190,86 @@ public class EquipoWebTest {
         this.mockMvc.perform(get("/equipos/1/usuarios"))
                 .andDo(print())
                 .andExpect(content().string(containsString("href=\"/equipos/1/agregar/usuario/1")));
+    }
+
+    @Test
+    public void botonesEditarEliminarEquipo() throws Exception {
+        Usuario usuario = new Usuario("antonio@gmail.com");
+        usuario.setAdminCheck(true);
+        Equipo equipo = new Equipo("Equipo prueba");
+        List<Equipo> equipos = new ArrayList<>();
+        equipos.add(equipo);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findAllOrderedByName()).thenReturn(equipos);
+
+        this.mockMvc.perform(get("/equipos"))
+                .andDo(print())
+                .andExpect(content().string(containsString("Editar")))
+                .andExpect(content().string(containsString("Borrar")));
+    }
+
+    @Test
+    public void editarEquipo() throws Exception {
+        Usuario usuario = new Usuario("antonio@gmail.com");
+        usuario.setAdminCheck(true);
+        Equipo equipo = new Equipo("Equipo prueba");
+        equipo.setId(1L);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+
+        this.mockMvc.perform((get("/equipos/1/editar")))
+                .andDo(print())
+                .andExpect(content().string(containsString("<label for=\"nombre\">Nombre del equipo:</label>")));
+    }
+
+    @Test
+    public void editarEquipoNoLogeado() throws Exception {
+        this.mockMvc.perform((get("/equipos/1/editar")))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void editarEquipoPOSTRedirect() throws Exception {
+        Usuario usuario = new Usuario("antonio@gmail.com");
+        Equipo equipo = new Equipo("Equipo sin modificar");
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+
+        this.mockMvc.perform(post("/equipos/1/editar")
+                .param("nombre", "Equipo Modificado"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/equipos"));
+    }
+
+    @Test
+    public void editarEquipoPOSTNoLogeado() throws Exception {
+        this.mockMvc.perform((post("/equipos/1/editar")))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void borrarEquipoRedirect() throws  Exception {
+        Usuario usuario = new Usuario("antonio@gmail.com");
+        Equipo equipo = new Equipo("Equipo sin modificar");
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+
+        this.mockMvc.perform(delete("/equipos/1"))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void eliminarEquipoNoLogeado() throws Exception {
+        this.mockMvc.perform((delete("/equipos/1")))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
