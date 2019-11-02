@@ -30,8 +30,9 @@
                             <a th:text="${equipo.nombre}" th:href="@{~/equipos/{id}/usuarios (id=${equipo.id})}" />
                         </td>
                         <td th:if="${admin == true}">
-                            <a class="btn btn-primary btn-xs" th:href="@{~/equipos/{id}/editar(id=${equipo.id})}">editar</a>
-                            <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;">borrar</a>
+                            <a class="btn btn-primary btn-xs" th:href="@{~/equipos/{id}/editar(id=${equipo.id})}">Editar</a>
+                            <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
+                               th:onclick="'del(\'/equipos/' + ${equipo.id} + '\')'">Borrar</a>
                         </td>
                     </tr>
                     </tbody>
@@ -51,5 +52,23 @@
         </div>
     </div>
     <div th:replace="fragments::javascript"/>
+
+    <!-- Ejemplo de uso de Ajax para lanzar una petición DELETE y borrar una equipo -->
+
+    <script type="text/javascript">
+        function del(urlBorrar) {
+            if (confirm('¿Estás seguro/a de que quieres borrar el equipo?')) {
+                $.ajax({
+                    url: urlBorrar,
+                    type: 'DELETE',
+                    success: function (results) {
+                        //refresh the page
+                        location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+
 </body>
 </html>
