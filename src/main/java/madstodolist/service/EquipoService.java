@@ -97,6 +97,9 @@ public class EquipoService {
     @Transactional
     public Equipo modificaEquipo(Long idEquipo, String nuevoNombre){
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if(equipo == null){
+            throw new EquipoServiceException("No existe un equipo con id " + idEquipo);
+        }
 
         equipo.setNombre(nuevoNombre);
         equipoRepository.save(equipo);

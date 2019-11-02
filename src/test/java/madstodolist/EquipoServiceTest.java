@@ -232,4 +232,17 @@ public class EquipoServiceTest {
         assertThat(equipoBD.getNombre()).isEqualTo("Proyecto nombre cambiado");
 
     }
+
+    @Test
+    public void cambiarNombreEquipoInexistente(){
+        //GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.modificaEquipo(0L, "Equipo B");
+        }).isInstanceOf(EquipoServiceException.class);
+    }
 }
