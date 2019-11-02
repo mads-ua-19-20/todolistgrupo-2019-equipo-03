@@ -212,4 +212,63 @@ public class EquipoServiceTest {
             equipoService.eliminarUsuarioEquipo(1L, 0L);
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    @Transactional
+    public void cambiarNombreEquipo(){
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Equipo equipo = equipoService.findById(1L);
+        Long idEquipo = equipo.getId();
+
+        // WHEN
+
+        Equipo equipoModificado = equipoService.modificaEquipo(idEquipo, "Proyecto nombre cambiado");
+        Equipo equipoBD = equipoService.findById(idEquipo);
+
+        // THEN
+
+        assertThat(equipoModificado.getNombre()).isEqualTo("Proyecto nombre cambiado");
+        assertThat(equipoBD.getNombre()).isEqualTo("Proyecto nombre cambiado");
+
+    }
+
+    @Test
+    public void cambiarNombreEquipoInexistente(){
+        //GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.modificaEquipo(0L, "Equipo B");
+        }).isInstanceOf(EquipoServiceException.class);
+    }
+
+    @Test
+    @Transactional
+    public void eliminarEquipo(){
+        // GIVEN
+        Equipo equipo = equipoService.findById(1L);
+
+        // WHEN
+        equipoService.borraEquipo(equipo.getId());
+        // THEN
+        assertThat(equipoService.findById(equipo.getId())).isNull();
+    }
+
+    @Test
+    public void eliminarEquipoInexistente(){
+        //GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.borraEquipo(0L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
 }

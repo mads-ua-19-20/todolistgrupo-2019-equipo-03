@@ -94,6 +94,30 @@ public class EquipoService {
         }
     }
 
+    @Transactional
+    public Equipo modificaEquipo(Long idEquipo, String nuevoNombre){
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if(equipo == null){
+            throw new EquipoServiceException("No existe un equipo con id " + idEquipo);
+        }
+
+        equipo.setNombre(nuevoNombre);
+        equipoRepository.save(equipo);
+
+        return equipo;
+    }
+
+    @Transactional
+    public void borraEquipo(Long idEquipo){
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+
+        if(equipo == null){
+            throw new EquipoServiceException("No existe un equipo con id " + idEquipo);
+        }
+
+        equipoRepository.delete(equipo);
+    }
+
     @Transactional(readOnly = true)
     public List<Equipo> findAllOrderedByName(){
         return equipoRepository.findByOrderByNombreAsc();
