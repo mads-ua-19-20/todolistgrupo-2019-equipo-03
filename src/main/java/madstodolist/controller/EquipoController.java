@@ -41,6 +41,7 @@ public class EquipoController {
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("equipos", equipos);
+            model.addAttribute("admin", usuario.getAdminCheck());
         }
         else{
             throw new UsuarioNoLogeadoException();
