@@ -139,9 +139,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
-        if(idLog == null){
-            throw  new UsuarioNoLogeadoException();
-        }
+        managerUserSesion.comprobarIdLogNotNull(idLog);
 
         Usuario usuarioLog = usuarioService.findById(idLog);
 
@@ -169,9 +167,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
-        if(idLog == null){
-            throw  new UsuarioNoLogeadoException();
-        }
+        managerUserSesion.comprobarIdLogNotNull(idLog);
 
         Usuario usuarioLog = usuarioService.findById(idLog);
         if(usuarioLog !=  null) {
@@ -197,9 +193,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
-        if(idLog == null){
-            throw  new UsuarioNoLogeadoException();
-        }
+        managerUserSesion.comprobarIdLogNotNull(idLog);
 
         Usuario usuarioLog = usuarioService.findById(idLog);
         if(usuarioLog !=  null) {
