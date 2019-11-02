@@ -110,6 +110,11 @@ public class EquipoService {
     @Transactional
     public void borraEquipo(Long idEquipo){
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+
+        if(equipo == null){
+            throw new EquipoServiceException("No existe un equipo con id " + idEquipo);
+        }
+
         equipoRepository.delete(equipo);
     }
 

@@ -258,4 +258,17 @@ public class EquipoServiceTest {
         // THEN
         assertThat(equipoService.findById(equipo.getId())).isNull();
     }
+
+    @Test
+    public void eliminarEquipoInexistente(){
+        //GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        //WHEN
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.borraEquipo(0L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
 }
