@@ -3,6 +3,7 @@ package madstodolist.controller;
 import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.EquipoNotFoundException;
+import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
@@ -140,7 +141,13 @@ public class EquipoController {
         }
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        if(idLog == null){
+            throw  new UsuarioNoLogeadoException();
+        }
+
         Usuario usuarioLog = usuarioService.findById(idLog);
+
         if(usuarioLog !=  null) {
             managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
             model.addAttribute("nombreUsuario", usuarioLog.getNombre());
@@ -148,11 +155,38 @@ public class EquipoController {
             model.addAttribute("equipo", equipo);
             equipo.setNombre(equipo.getNombre());
         }
-        else if(idLog == null){
-            throw new UsuarioNoLogeadoException();
+        else{
+            throw new UsuarioNotFoundException();
         }
 
         return "formEditarEquipo";
     }
 
+    @PostMapping("/equipos/{id}/editar")
+    public String grabaEquipoModificado(@PathVariable(value="id") Long idEquipo, @ModelAttribute EquipoData equipoData,
+                                       Model model, RedirectAttributes flash, HttpSession session) {
+        Equipo equipo = equipoService.findById(idEquipo);
+        if (equipo == null) {
+            throw new EquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        if(idLog == null){
+            throw  new UsuarioNoLogeadoException();
+        }
+
+        Usuario usuarioLog = usuarioService.findById(idLog);
+        if(usuarioLog !=  null) {
+            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+
+            equipoService.modificaEquipo(idEquipo, equipoData.getNombre());
+            flash.addFlashAttribute("mensaje", "Equipo modificado correctamente");
+        }
+        else{
+            throw new UsuarioNotFoundException();
+        }
+
+        return "redirect:/equipos";
+    }
 }
