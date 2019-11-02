@@ -88,7 +88,7 @@ public class EquipoWebTest {
     public void verEquiposNoAutorizado() throws Exception {
         this.mockMvc.perform(get("/equipos"))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isNotFound());
 
     }
 
@@ -96,7 +96,7 @@ public class EquipoWebTest {
     public void verUsuariosEquipoNoAutorizado() throws Exception {
         this.mockMvc.perform(get("/equipos/1/usuarios"))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isNotFound());
 
     }
 

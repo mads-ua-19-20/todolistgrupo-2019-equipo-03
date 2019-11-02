@@ -1,7 +1,6 @@
 package madstodolist.controller;
 
 import madstodolist.authentication.ManagerUserSesion;
-import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.EquipoNotFoundException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
@@ -31,6 +30,9 @@ public class EquipoController {
     @GetMapping("/equipos")
     public String listadoEquipos(Model model, HttpSession session) {
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(id);
+
         Usuario usuario = usuarioService.findById(id);
 
         if(usuario !=  null){
@@ -42,7 +44,7 @@ public class EquipoController {
             model.addAttribute("admin", usuario.getAdminCheck());
         }
         else{
-            throw new UsuarioNoLogeadoException();
+            throw new UsuarioNotFoundException();
         }
 
         return "equipos";
@@ -51,6 +53,9 @@ public class EquipoController {
     @GetMapping("equipos/{id}/usuarios")
     public String getUsuariosEquipo(@PathVariable(value="id") Long idEquipo, Model model, HttpSession session){
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(id);
+
         Usuario usuario = usuarioService.findById(id);
 
         if(usuario !=  null){
@@ -68,7 +73,7 @@ public class EquipoController {
             model.addAttribute("apuntado", apuntado);
         }
         else{
-            throw new UsuarioNoLogeadoException();
+            throw new UsuarioNotFoundException();
         }
 
         return "usuariosEquipo";
@@ -78,6 +83,9 @@ public class EquipoController {
     public String formNuevoEquipo(@ModelAttribute EquipoData equipoData, Model model,
                                   HttpSession session) {
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(id);
+
         Usuario usuario = usuarioService.findById(id);
 
         if(usuario != null){
@@ -85,7 +93,7 @@ public class EquipoController {
             model.addAttribute("idUsuario", usuario.getId());
         }
         else{
-            throw new UsuarioNoLogeadoException();
+            throw new UsuarioNotFoundException();
         }
         return "formNuevoEquipo";
     }
@@ -95,6 +103,9 @@ public class EquipoController {
                              Model model, RedirectAttributes flash,
                              HttpSession session) {
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(id);
+
         Usuario usuario = usuarioService.findById(id);
 
         if(usuario != null){
@@ -102,7 +113,7 @@ public class EquipoController {
             flash.addFlashAttribute("mensaje", "Equipo creado correctamente");
         }
         else{
-            throw new UsuarioNoLogeadoException();
+            throw new UsuarioNotFoundException();
         }
         return "redirect:/equipos";
     }
