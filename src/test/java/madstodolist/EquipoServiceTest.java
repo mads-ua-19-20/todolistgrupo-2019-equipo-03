@@ -212,4 +212,24 @@ public class EquipoServiceTest {
             equipoService.eliminarUsuarioEquipo(1L, 0L);
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    public void cambiarNombreEquipo(){
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Equipo equipo = equipoService.findById(1L);
+        Long idEquipo = equipo.getId();
+
+        // WHEN
+
+        Equipo equipoModificado = equipoService.modificaEquipo(idEquipo, "Proyecto nombre cambiado");
+        Equipo equipoBD = equipoService.findById(idEquipo);
+
+        // THEN
+
+        assertThat(equipoModificado.getNombre()).isEqualTo("Proyecto nombre cambiado");
+        assertThat(equipoBD.getNombre()).isEqualTo("Proyecto nombre cambiado");
+
+    }
 }

@@ -94,6 +94,16 @@ public class EquipoService {
         }
     }
 
+    @Transactional
+    public Equipo modificaEquipo(Long idEquipo, String nuevoNombre){
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+
+        equipo.setNombre(nuevoNombre);
+        equipoRepository.save(equipo);
+
+        return equipo;
+    }
+
     @Transactional(readOnly = true)
     public List<Equipo> findAllOrderedByName(){
         return equipoRepository.findByOrderByNombreAsc();

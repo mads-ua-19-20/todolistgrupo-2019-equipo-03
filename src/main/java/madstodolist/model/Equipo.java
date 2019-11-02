@@ -32,6 +32,10 @@ public class Equipo {
         return nombre;
     }
 
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+
     public Long getId(){
         return  id;
     }
