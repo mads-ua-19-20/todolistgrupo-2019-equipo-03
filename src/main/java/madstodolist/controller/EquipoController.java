@@ -159,7 +159,7 @@ public class EquipoController {
             model.addAttribute("nombreUsuario", usuarioLog.getNombre());
             model.addAttribute("idUsuario", usuarioLog.getId());
             model.addAttribute("equipo", equipo);
-            equipo.setNombre(equipo.getNombre());
+            equipoData.setNombre(equipo.getNombre());
         }
         else{
             throw new UsuarioNotFoundException();
