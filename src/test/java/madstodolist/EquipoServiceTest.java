@@ -116,7 +116,6 @@ public class EquipoServiceTest {
     }
 
     @Test
-    @Transactional
     public void testAgregarUsuarioEquipoInexistente(){
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
@@ -130,7 +129,6 @@ public class EquipoServiceTest {
     }
 
     @Test
-    @Transactional
     public void testAgregarUsuarioInexistenteEquipo(){
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
@@ -186,7 +184,6 @@ public class EquipoServiceTest {
     }
 
     @Test
-    @Transactional
     public void testEliminaUsuarioEquipoInexistente(){
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
@@ -200,7 +197,6 @@ public class EquipoServiceTest {
     }
 
     @Test
-    @Transactional
     public void testEliminaUsuarioInexistenteEquipo(){
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
