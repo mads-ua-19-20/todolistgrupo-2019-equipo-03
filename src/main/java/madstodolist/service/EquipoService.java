@@ -64,34 +64,9 @@ public class EquipoService {
             throw new EquipoServiceException("Usuario " + idUsuario +
                     " no existe al intentar eliminarlo de la lista del equipo elegido");
         }
-        List<Usuario> listaUsuariosEquipo = usuariosEquipo(idEquipo);
-        List<Equipo> listaEquiposUsuario = new ArrayList<>(usuario.getEquipos());
-        boolean done = false;
 
-        for(int i = 0; i<listaUsuariosEquipo.size() && !done; i++){
-            if(listaUsuariosEquipo.get(i).getId() == idUsuario){
-                listaUsuariosEquipo.remove(i);
-                done = true;
-            }
-        }
-        if(done){
-            Set<Usuario> listaActualizada = new HashSet<>();
-            listaActualizada.addAll(listaUsuariosEquipo);
-            equipo.setUsuarios(listaActualizada);
-            done = false;
-        }
-
-        for(int i = 0; i<listaEquiposUsuario.size() && !done; i++){
-            if(listaEquiposUsuario.get(i).getId() == idEquipo){
-                listaEquiposUsuario.remove(i);
-                done = true;
-            }
-        }
-        if(done){
-            Set<Equipo> listaActualizada = new HashSet<>();
-            listaActualizada.addAll(listaEquiposUsuario);
-            usuario.setEquipos(listaActualizada);
-        }
+        equipo.getUsuarios().remove(usuario);
+        usuario.getEquipos().remove(equipo);
     }
 
     @Transactional
