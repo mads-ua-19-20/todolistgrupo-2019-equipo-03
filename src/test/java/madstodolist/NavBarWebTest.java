@@ -45,6 +45,6 @@ public class NavBarWebTest {
 
         this.mockMvc.perform(get("/usuarios/1/tareas"))
                 .andDo(print())
-                .andExpect(content().string(containsString("class=\"navbar navbar-expand-lg navbar-light\" style=\"background-color:#7DCCDA\"")));
+                .andExpect(content().string(containsString("class=\"navbar navbar-expand-lg navbar-light\" style=\"background-color:#4da6ff\"")));
     }
 }
