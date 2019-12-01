@@ -19,6 +19,8 @@ public class TareaService {
 
     Logger logger = LoggerFactory.getLogger(TareaService.class);
 
+    public enum TareaStatus {PENDIENTE, EN_PROCESO, TERMINADA}
+
     private UsuarioRepository usuarioRepository;
     private TareaRepository tareaRepository;
 
