@@ -39,7 +39,7 @@ public class Tarea implements Serializable {
     public Tarea(Usuario usuario, String titulo) {
         this.usuario = usuario;
         this.titulo = titulo;
-        this.estado = 0;
+        this.estado = 1;
         usuario.getTareas().add(this);
     }
 

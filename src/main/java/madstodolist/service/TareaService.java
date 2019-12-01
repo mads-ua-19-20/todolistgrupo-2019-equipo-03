@@ -35,7 +35,6 @@ public class TareaService {
             throw new TareaServiceException("Usuario " + idUsuario + " no existe al crear tarea " + tituloTarea);
         }
         Tarea tarea = new Tarea(usuario, tituloTarea);
-        tarea.setEstado(1);
         tareaRepository.save(tarea);
         return tarea;
     }
