@@ -101,7 +101,7 @@ public class TareaController {
 
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
 
-        tareaService.modificaTarea(idTarea, tareaData.getTitulo());
+        tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado());
         flash.addFlashAttribute("mensaje", "Tarea modificada correctamente");
         return "redirect:/usuarios/" + tarea.getUsuario().getId() + "/tareas";
     }

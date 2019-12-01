@@ -19,8 +19,6 @@ public class TareaService {
 
     Logger logger = LoggerFactory.getLogger(TareaService.class);
 
-    public enum TareaStatus {PENDIENTE, EN_PROCESO, TERMINADA}
-
     private UsuarioRepository usuarioRepository;
     private TareaRepository tareaRepository;
 
@@ -37,6 +35,7 @@ public class TareaService {
             throw new TareaServiceException("Usuario " + idUsuario + " no existe al crear tarea " + tituloTarea);
         }
         Tarea tarea = new Tarea(usuario, tituloTarea);
+        tarea.setEstado(1);
         tareaRepository.save(tarea);
         return tarea;
     }
@@ -58,12 +57,15 @@ public class TareaService {
     }
 
     @Transactional
-    public Tarea modificaTarea(Long idTarea, String nuevoTitulo) {
+    public Tarea modificaTarea(Long idTarea, String nuevoTitulo, int nuevoEstado) {
         Tarea tarea = tareaRepository.findById(idTarea).orElse(null);
         if (tarea == null) {
             throw new TareaServiceException("No existe tarea con id " + idTarea);
         }
         tarea.setTitulo(nuevoTitulo);
+        if(nuevoEstado == 1 || nuevoEstado == 2 || nuevoEstado == 3){
+            tarea.setEstado(nuevoEstado);
+        }
         tareaRepository.save(tarea);
         return tarea;
     }
