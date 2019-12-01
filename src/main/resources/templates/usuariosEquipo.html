@@ -7,7 +7,7 @@
 
         <div class="row mt-3">
             <div class="col">
-                <h2 th:text="'Listado de usuarios del equipo ' + ${nombreEquipo}"></h2>
+                <h2 th:text="'Equipo ' + ${nombreEquipo}"></h2>
             </div>
         </div>
         <div class="row mt-3 col">
@@ -19,6 +19,24 @@
         </div>
         <div class="row mt-3">
             <div class="col">
+                <h4 th:text="'Tareas'"></h4>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Titulo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="tareaEquipo: ${tareasEquipo}">
+                        <td th:text="${tareaEquipo.getId()}"></td>
+                        <td th:text="${tareaEquipo.getTitulo()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <h4 th:text="'Usuarios'"></h4>
                 <table class="table table-striped">
                     <thead>
                     <tr>

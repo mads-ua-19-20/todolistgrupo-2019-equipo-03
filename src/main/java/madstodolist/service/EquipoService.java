@@ -1,9 +1,6 @@
 package madstodolist.service;
 
-import madstodolist.model.Equipo;
-import madstodolist.model.EquipoRepository;
-import madstodolist.model.Usuario;
-import madstodolist.model.UsuarioRepository;
+import madstodolist.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +104,12 @@ public class EquipoService {
     public List<Usuario> usuariosEquipo(Long idEquipo){
         Equipo equipo = findById(idEquipo);
         return new ArrayList<>(equipo.getUsuarios());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TareaEquipo> tareasEquipo(Long idEquipo){
+        Equipo equipo = findById(idEquipo);
+        return new ArrayList<>(equipo.getTareasEquipo());
     }
 
     @Transactional(readOnly = true)

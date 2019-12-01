@@ -4,6 +4,7 @@ import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.controller.exception.EquipoNotFoundException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
+import madstodolist.model.TareaEquipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
 import madstodolist.service.UsuarioService;
@@ -65,12 +66,14 @@ public class EquipoController {
             }
             List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
             boolean apuntado = usuariosEquipo.contains(usuario);
+            List<TareaEquipo> tareasEquipo = equipoService.tareasEquipo(idEquipo);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("usuariosEquipo", usuariosEquipo);
             model.addAttribute("nombreEquipo", equipo.getNombre());
             model.addAttribute("idEquipo", equipo.getId());
             model.addAttribute("apuntado", apuntado);
+            model.addAttribute("tareasEquipo", tareasEquipo);
         }
         else{
             throw new UsuarioNotFoundException();
