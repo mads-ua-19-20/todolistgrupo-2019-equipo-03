@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -77,15 +78,17 @@ public class TareaServiceTest {
     }
 
     @Test
+    @Transactional
     public void testModificarTarea() {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo");
         Long idNuevaTarea = tarea.getId();
+        int estadoInicial = tarea.getEstado();
 
         // WHEN
-
+        //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
         Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 0);
         Tarea tareaBD = tareaService.findById(idNuevaTarea);
 
@@ -93,6 +96,27 @@ public class TareaServiceTest {
 
         assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
         assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getEstado()).isEqualTo(estadoInicial);
+    }
+
+    @Test
+    @Transactional
+    public void testModificarTareaEstado() {
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo");
+        Long idNuevaTarea = tarea.getId();
+        int estadoInicial = tarea.getEstado();
+
+        // WHEN
+        //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2);
+        Tarea tareaBD = tareaService.findById(idNuevaTarea);
+
+        // THEN
+
+        assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getEstado()).isNotEqualTo(estadoInicial);
+        assertThat(tareaBD.getEstado()).isEqualTo(2);
     }
 
     @Test
