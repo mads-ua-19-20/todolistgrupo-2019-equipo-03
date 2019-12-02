@@ -118,15 +118,4 @@ public class EquipoService {
     @Transactional(readOnly = true)
     public List<Equipo> findAll() { return equipoRepository.findAll(); }
 
-    @Transactional
-    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea) {
-        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
-        if (equipo == null) {
-            throw new TareaServiceException("Usuario " + idEquipo + " no existe al crear tarea " + tituloTarea);
-        }
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea);
-        tareaEquipoRepository.save(tareaEquipo);
-        return tareaEquipo;
-    }
-
 }

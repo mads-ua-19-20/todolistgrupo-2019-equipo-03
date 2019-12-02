@@ -2,11 +2,13 @@ package madstodolist.controller;
 
 import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.controller.exception.EquipoNotFoundException;
+import madstodolist.controller.exception.TareaEquipoNotFoundException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
 import madstodolist.model.TareaEquipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
+import madstodolist.service.TareaEquipoService;
 import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,9 @@ public class EquipoController {
 
     @Autowired
     EquipoService equipoService;
+
+    @Autowired
+    TareaEquipoService tareaEquipoService;
 
     @Autowired
     ManagerUserSesion managerUserSesion;
@@ -256,8 +261,24 @@ public class EquipoController {
             throw new UsuarioNotFoundException();
         }
 
-        equipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo());
+        tareaEquipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo());
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
+
+    @DeleteMapping("/tareasEquipo/{id}")
+    @ResponseBody
+    public String borrarTareaEquipo(@PathVariable(value="id") Long idTareaEquipo, RedirectAttributes flash, HttpSession session) {
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        tareaEquipoService.borraTareaEquipo(idTareaEquipo);
+        flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
+        return "";
     }
 }

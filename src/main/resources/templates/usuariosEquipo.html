@@ -37,7 +37,7 @@
                             <td th:if="${apuntado == true}">
                                 <a class="btn btn-primary btn-xs" th:href="@{/usuarios/{id}/tareas}"/>Editar</a>
                                 <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
-                                   th:onclick="">Borrar</a>
+                                   th:onclick="'del(\'/tareasEquipo/' + ${tareaEquipo.getId()} + '\')'">Borrar</a>
                             </td>
                         </tr>
                         </tbody>
@@ -71,7 +71,7 @@
 
     <script type="text/javascript">
         function del(urlBorrar) {
-            if (confirm('¿Estás seguro/a de que quieres borrar la tarea?')) {
+            if (confirm('¿Estás seguro/a de que quieres borrar la tarea de equipo?')) {
                 $.ajax({
                     url: urlBorrar,
                     type: 'DELETE',
