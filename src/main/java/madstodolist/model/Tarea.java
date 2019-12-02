@@ -1,5 +1,4 @@
 package madstodolist.model;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -14,6 +13,9 @@ public class Tarea implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private int estado;
+
     @NotNull
     private String titulo;
 
@@ -37,6 +39,7 @@ public class Tarea implements Serializable {
     public Tarea(Usuario usuario, String titulo) {
         this.usuario = usuario;
         this.titulo = titulo;
+        this.estado = 1;
         usuario.getTareas().add(this);
     }
 
@@ -64,6 +67,9 @@ public class Tarea implements Serializable {
         this.usuario = usuario;
     }
 
+    public int getEstado(){ return estado; }
+
+    public void setEstado(int estado){ this.estado = estado; }
 
     @Override
     public boolean equals(Object o) {

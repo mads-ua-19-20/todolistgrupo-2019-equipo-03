@@ -56,12 +56,15 @@ public class TareaService {
     }
 
     @Transactional
-    public Tarea modificaTarea(Long idTarea, String nuevoTitulo) {
+    public Tarea modificaTarea(Long idTarea, String nuevoTitulo, int nuevoEstado) {
         Tarea tarea = tareaRepository.findById(idTarea).orElse(null);
         if (tarea == null) {
             throw new TareaServiceException("No existe tarea con id " + idTarea);
         }
         tarea.setTitulo(nuevoTitulo);
+        if(nuevoEstado == 1 || nuevoEstado == 2 || nuevoEstado == 3){
+            tarea.setEstado(nuevoEstado);
+        }
         tareaRepository.save(tarea);
         return tarea;
     }

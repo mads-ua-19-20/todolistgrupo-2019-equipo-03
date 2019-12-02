@@ -1,5 +1,4 @@
 language: java
-
 branches:
   only:
     - master
@@ -11,4 +10,13 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE mads_test;'
 
-script: ./mvnw -DargLine="-Dspring.profiles.active=mysql" test
+script: ./mvnw test -Dspring.profiles.active=mysql
+
+after_success:
+  - docker build -t dpc32/mads-todolist-equipo-03:$TRAVIS_BUILD_NUMBER .
+  - if [ "$TRAVIS_EVENT_TYPE" != "pull_request" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push dpc32/mads-todolist-equipo-03:$TRAVIS_BUILD_NUMBER;
+    docker tag dpc32/mads-todolist-equipo-03:$TRAVIS_BUILD_NUMBER dpc32/mads-todolist-equipo-03:latest;
+    docker push dpc32/mads-todolist-equipo-03:latest;
+    fi

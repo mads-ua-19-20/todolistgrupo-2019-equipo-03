@@ -44,6 +44,7 @@ public class TareaTest {
 
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
+        assertThat(tarea.getEstado()).isEqualTo(1);
     }
 
     @Test

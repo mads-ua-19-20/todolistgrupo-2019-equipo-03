@@ -20,6 +20,7 @@
                 <tr>
                     <th>Id</th>
                     <th>Tarea</th>
+                    <th>Estado</th>
                     <th>Acción</th>
                 </tr>
                 </thead>
@@ -27,6 +28,13 @@
                 <tr th:each="tarea: ${tareas}">
                     <td th:text="${tarea.id}"></td>
                     <td th:text="${tarea.titulo}"></td>
+                    <div th:switch="${tarea.estado}">
+                        <td th:case="1" th:text="'Pendiente'"></td>
+                        <td th:case="2" th:text="'En progreso'"></td>
+                        <td th:case="3" th:text="'Terminada'"></td>
+                        <td th:case="*" th:text="'Sin estado'"></td>
+                    </div>
+
                     <td><a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
                         <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
                            th:onclick="'del(\'/tareas/' + ${tarea.id} + '\')'">borrar</a>
