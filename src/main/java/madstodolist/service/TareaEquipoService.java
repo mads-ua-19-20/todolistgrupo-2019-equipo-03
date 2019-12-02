@@ -42,4 +42,15 @@ public class TareaEquipoService {
         }
         tareaEquipoRepository.delete(tareaEquipo);
     }
+
+    @Transactional
+    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo) {
+        TareaEquipo tareaEquipo = tareaEquipoRepository.findById(idTareaEquipo).orElse(null);
+        if (tareaEquipo == null) {
+            throw new TareaServiceException("No existe tarea de equipo con id " + idTareaEquipo);
+        }
+        tareaEquipo.setTitulo(nuevoTitulo);
+        tareaEquipoRepository.save(tareaEquipo);
+        return tareaEquipo;
+    }
 }

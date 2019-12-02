@@ -281,4 +281,44 @@ public class EquipoController {
         flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
         return "";
     }
+
+    @GetMapping("/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar")
+    public String formEditaTareaEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTareaEquipo") Long idTareaEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
+                                 Model model, HttpSession session) {
+
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session,idLog);
+
+        Usuario usuario = usuarioService.findById(idLog);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        model.addAttribute("tareaEquipo", tareaEquipo);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("idEquipo", idEquipo);
+        tareaEquipoData.setTitulo(tareaEquipo.getTitulo());
+        return "formEditarTareaEquipo";
+    }
+
+    @PostMapping("/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar")
+    public String grabaTareaEquipoModificada(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTareaEquipo") Long idTareaEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
+                                       Model model, RedirectAttributes flash, HttpSession session) {
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo());
+        flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
 }
