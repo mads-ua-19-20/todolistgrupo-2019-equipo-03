@@ -221,4 +221,43 @@ public class EquipoController {
 
         return "";
     }
+
+    @GetMapping("/equipos/{id}/usuarios/tareanueva")
+    public String formNuevaTarea(@PathVariable(value="id") Long idEquipo,
+                                 @ModelAttribute TareaEquipoData tareaEquipoData, Model model,
+                                 HttpSession session) {
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        Usuario usuario = usuarioService.findById(idLog);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        Equipo equipo = equipoService.findById(idEquipo);
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("equipo", equipo);
+        return "formNuevaTareaEquipo";
+    }
+
+
+    @PostMapping("/equipos/{id}/usuarios/tareanueva")
+    public String nuevaTarea(@PathVariable(value="id") Long idEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
+                             Model model, RedirectAttributes flash,
+                             HttpSession session) {
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        Usuario usuario = usuarioService.findById(idLog);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        equipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo());
+        flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
 }
