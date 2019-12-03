@@ -5,6 +5,7 @@ import madstodolist.controller.EquipoController;
 import madstodolist.model.Equipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
+import madstodolist.service.TareaEquipoService;
 import madstodolist.service.UsuarioService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,9 @@ public class EquipoWebTest {
 
     @MockBean
     private EquipoService equipoService;
+
+    @MockBean
+    private TareaEquipoService tareaEquipoService;
 
     @MockBean
     private ManagerUserSesion managerUserSesion;
@@ -79,7 +83,7 @@ public class EquipoWebTest {
 
         this.mockMvc.perform(get("/equipos/1/usuarios"))
                 .andDo(print())
-                .andExpect(content().string(containsString("Listado de usuarios del equipo Proyecto Cobalto")))
+                .andExpect(content().string(containsString("Equipo Proyecto Cobalto")))
                 .andExpect(content().string(containsString("domingo@ua.es")));
 
     }

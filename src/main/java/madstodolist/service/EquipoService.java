@@ -1,9 +1,6 @@
 package madstodolist.service;
 
-import madstodolist.model.Equipo;
-import madstodolist.model.EquipoRepository;
-import madstodolist.model.Usuario;
-import madstodolist.model.UsuarioRepository;
+import madstodolist.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +17,13 @@ public class EquipoService {
 
     private UsuarioRepository usuarioRepository;
 
+    private TareaEquipoRepository tareaEquipoRepository;
+
     @Autowired
-    public EquipoService(EquipoRepository equipoRepository, UsuarioRepository usuarioRepository){
+    public EquipoService(EquipoRepository equipoRepository, UsuarioRepository usuarioRepository, TareaEquipoRepository tareaEquipoRepository){
         this.equipoRepository = equipoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.tareaEquipoRepository = tareaEquipoRepository;
     }
 
     @Transactional
@@ -110,5 +110,12 @@ public class EquipoService {
     }
 
     @Transactional(readOnly = true)
+    public List<TareaEquipo> tareasEquipo(Long idEquipo){
+        Equipo equipo = findById(idEquipo);
+        return new ArrayList<>(equipo.getTareasEquipo());
+    }
+
+    @Transactional(readOnly = true)
     public List<Equipo> findAll() { return equipoRepository.findAll(); }
+
 }

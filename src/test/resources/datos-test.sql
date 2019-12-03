@@ -6,3 +6,5 @@ INSERT INTO tareas (id, titulo, usuario_id, estado) VALUES('2', 'Renovar DNI', '
 INSERT INTO equipos (id, nombre) VALUES('1', 'Proyecto Cobalto');
 INSERT INTO equipo_usuario (fk_equipo, fk_usuario) VALUES('1', '1');
 INSERT INTO equipos (id, nombre) VALUES('2', 'Proyecto Adamantium');
+
+INSERT INTO tareasequipo (id, titulo, equipo_id) VALUES('1', 'Limpieza almacén', '1');
