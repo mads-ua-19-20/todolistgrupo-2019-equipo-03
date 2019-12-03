@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,8 @@ public class TareaServiceTest {
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         // WHEN
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Práctica 1 de MADS");
+        Date fechaLimite = new Date(1575375150L);
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Práctica 1 de MADS", fechaLimite);
 
         // THEN
 
@@ -50,7 +52,7 @@ public class TareaServiceTest {
         Usuario usuario = new Usuario("ana.garcia@gmail.com");
         usuario.setId(1L);
 
-        Tarea lavarCoche = new Tarea(usuario, "Lavar coche");
+        Tarea lavarCoche = new Tarea(usuario, "Lavar coche", null);
         lavarCoche.setId(1L);
 
         // WHEN
@@ -83,13 +85,15 @@ public class TareaServiceTest {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo");
+        Date fechaLimite = new Date(1575375150L);
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", fechaLimite);
         Long idNuevaTarea = tarea.getId();
         int estadoInicial = tarea.getEstado();
 
         // WHEN
+        fechaLimite.setTime(1575375844L);
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 0);
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 0, fechaLimite);
         Tarea tareaBD = tareaService.findById(idNuevaTarea);
 
         // THEN
@@ -97,18 +101,19 @@ public class TareaServiceTest {
         assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
         assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
         assertThat(tareaBD.getEstado()).isEqualTo(estadoInicial);
+        assertThat(tareaBD.getFechaLimite()).isEqualTo(fechaLimite);
     }
 
     @Test
     @Transactional
     public void testModificarTareaEstado() {
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", null);
         Long idNuevaTarea = tarea.getId();
         int estadoInicial = tarea.getEstado();
 
         // WHEN
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2);
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2, null);
         Tarea tareaBD = tareaService.findById(idNuevaTarea);
 
         // THEN
@@ -120,10 +125,31 @@ public class TareaServiceTest {
     }
 
     @Test
+    @Transactional
+    public void testModificarTareaFechaLimite() {
+        Date fechaLimite = new Date(1575375150L);
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", fechaLimite);
+        Long idNuevaTarea = tarea.getId();
+        Date fechaInicial = tarea.getFechaLimite();
+
+        // WHEN
+        Date fechaLimite2 = new Date(1595375844L);
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2, fechaLimite2);
+        Tarea tareaBD = tareaService.findById(idNuevaTarea);
+
+        // THEN
+
+        assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getFechaLimite()).isNotEqualTo(fechaInicial);
+        assertThat(tareaBD.getFechaLimite()).isEqualTo(fechaLimite2);
+    }
+
+    @Test
     public void testBorrarTarea() {
         // GIVEN
 
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Estudiar MADS");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Estudiar MADS", null);
 
         // WHEN
 

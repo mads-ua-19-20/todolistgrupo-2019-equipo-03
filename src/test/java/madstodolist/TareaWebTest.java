@@ -62,7 +62,7 @@ public class TareaWebTest {
 
     @Test
     public void editarTareaDevuelveForm() throws Exception {
-        Tarea tarea = new Tarea(new Usuario("domingo@ua.es"), "Lavar el coche");
+        Tarea tarea = new Tarea(new Usuario("domingo@ua.es"), "Lavar el coche", null);
         tarea.setId(1L);
         tarea.getUsuario().setId(1L);
 
