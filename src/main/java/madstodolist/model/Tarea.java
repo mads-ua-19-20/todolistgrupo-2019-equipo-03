@@ -17,6 +17,7 @@ public class Tarea implements Serializable {
 
     private int estado;
 
+    @Temporal(TemporalType.DATE)
     private Date fechalimite;
 
     @NotNull

@@ -55,7 +55,8 @@ public class TareaController {
         if (usuario == null) {
             throw new UsuarioNotFoundException();
         }
-        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo(), null);
+
+        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo(), tareaData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/usuarios/" + idUsuario + "/tareas";
     }
