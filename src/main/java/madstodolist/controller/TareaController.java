@@ -55,7 +55,7 @@ public class TareaController {
         if (usuario == null) {
             throw new UsuarioNotFoundException();
         }
-        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo());
+        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo(), null);
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/usuarios/" + idUsuario + "/tareas";
     }
@@ -101,7 +101,7 @@ public class TareaController {
 
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
 
-        tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado());
+        tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado(), null);
         flash.addFlashAttribute("mensaje", "Tarea modificada correctamente");
         return "redirect:/usuarios/" + tarea.getUsuario().getId() + "/tareas";
     }
