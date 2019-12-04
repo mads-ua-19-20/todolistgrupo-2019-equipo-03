@@ -38,6 +38,7 @@ public class TareaEquipoTest {
 
         assertThat(tareaEquipo.getTitulo()).isEqualTo("Cambiar ruedas bicicleta");
         assertThat(tareaEquipo.getEquipo()).isEqualTo(equipo);
+        assertThat(tareaEquipo.getEstado()).isEqualTo(1);
     }
 
     @Test
