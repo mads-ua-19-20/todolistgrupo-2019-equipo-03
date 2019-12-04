@@ -27,6 +27,7 @@
                         <tr>
                             <th>Id</th>
                             <th>Titulo</th>
+                            <th>Estado</th>
                             <th th:if="${apuntado == true}">Acción</th>
                         </tr>
                         </thead>
@@ -34,6 +35,12 @@
                         <tr th:each="tareaEquipo: ${tareasEquipo}">
                             <td th:text="${tareaEquipo.getId()}"></td>
                             <td th:text="${tareaEquipo.getTitulo()}"></td>
+                            <div th:switch="${tareaEquipo.getEstado()}">
+                                <td th:case="1" th:text="'Pendiente'"></td>
+                                <td th:case="2" th:text="'En progreso'"></td>
+                                <td th:case="3" th:text="'Terminada'"></td>
+                                <td th:case="*" th:text="'Sin estado'"></td>
+                            </div>
                             <td th:if="${apuntado == true}">
                                 <a class="btn btn-primary btn-xs"
                                    th:href="@{/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar(idEquipo=${idEquipo}, idTareaEquipo=${tareaEquipo.getId()})}"/>Editar</a>
