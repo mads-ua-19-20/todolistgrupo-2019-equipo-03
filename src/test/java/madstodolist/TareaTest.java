@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,14 +38,15 @@ public class TareaTest {
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
 
         // WHEN
-
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        Date fechaLimite = new Date(1575375150L);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", fechaLimite);
 
         // THEN
 
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getEstado()).isEqualTo(1);
+        assertThat(tarea.getFechaLimite()).isEqualTo(fechaLimite);
     }
 
     @Test
@@ -52,9 +54,9 @@ public class TareaTest {
         // GIVEN
 
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
-        Tarea tarea1 = new Tarea(usuario, "Práctica 1 de MADS");
-        Tarea tarea2 = new Tarea(usuario, "Práctica 1 de MADS");
-        Tarea tarea3 = new Tarea(usuario, "Pagar el alquiler");
+        Tarea tarea1 = new Tarea(usuario, "Práctica 1 de MADS", null);
+        Tarea tarea2 = new Tarea(usuario, "Práctica 1 de MADS", null);
+        Tarea tarea3 = new Tarea(usuario, "Pagar el alquiler", null);
 
         // THEN
 
@@ -73,7 +75,8 @@ public class TareaTest {
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         Usuario usuario = usuarioRepository.findById(1L).orElse(null);
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        Date fechaLimite = new Date(1575375150L);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", fechaLimite);
 
         // WHEN
 
@@ -84,6 +87,7 @@ public class TareaTest {
         assertThat(tarea.getId()).isNotNull();
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
+        assertThat(tarea.getFechaLimite()).isEqualTo(fechaLimite);
     }
 
     @Test(expected = Exception.class)
@@ -93,7 +97,7 @@ public class TareaTest {
         // Creamos un usuario sin ID y, por tanto, sin estar en gestionado
         // por JPA
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
 
         // WHEN
 
@@ -130,7 +134,7 @@ public class TareaTest {
         // WHEN
 
         Set<Tarea> tareas = usuario.getTareas();
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
         tareaRepository.save(tarea);
 
         // THEN
