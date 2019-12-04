@@ -85,7 +85,7 @@ public class TareaEquipoServiceTest {
 
         // WHEN
 
-        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Engrasar cadena");
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Engrasar cadena", 1);
         TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTareaEquipo);
 
         // THEN
