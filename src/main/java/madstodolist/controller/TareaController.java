@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -71,6 +73,10 @@ public class TareaController {
             throw new UsuarioNotFoundException();
         }
         List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
+
+        LocalDate date = LocalDate.now();
+        Date fecha = Date.valueOf(date);
+        model.addAttribute("fecha", fecha);
         model.addAttribute("usuario", usuario);
         model.addAttribute("tareas", tareas);
         return "listaTareas";
@@ -89,6 +95,7 @@ public class TareaController {
 
         model.addAttribute("tarea", tarea);
         tareaData.setTitulo(tarea.getTitulo());
+        tareaData.setFechalimite(tarea.getFechaLimite());
         return "formEditarTarea";
     }
 
@@ -102,7 +109,7 @@ public class TareaController {
 
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
 
-        tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado(), null);
+        tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado(), tareaData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea modificada correctamente");
         return "redirect:/usuarios/" + tarea.getUsuario().getId() + "/tareas";
     }

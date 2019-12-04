@@ -26,6 +26,10 @@
                 </select>
             </div>
         </div>
+        <div class="form-group">
+            <label for="fechalimite">Fecha límite de la tarea:</label>
+            <input class="form-control" id="fechalimite" name="fechalimite" placeholder="01-12-2019" th:field="*{fechalimite}" type="datetime-local"/>
+        </div>
         <button class="btn btn-primary" type="submit">Modificar tarea</button>
         <a class="btn btn-link" th:href="@{/usuarios/{id}/tareas(id=${tarea.usuario.id})}">Cancelar</a>
         </div>

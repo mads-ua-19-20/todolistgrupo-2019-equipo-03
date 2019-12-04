@@ -35,7 +35,8 @@
                         <td th:case="3" th:text="'Terminada'"></td>
                         <td th:case="*" th:text="'Sin estado'"></td>
                     </div>
-                    <td th:text="${tarea.fechaLimite}"></td>
+                    <td th:class="${tarea.fechaLimite > fecha} ? '' : 'text-danger'" th:text="${tarea.fechaLimite}"></td>
+
 
                     <td><a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
                         <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
