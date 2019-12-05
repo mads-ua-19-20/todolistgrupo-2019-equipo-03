@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments :: head (titulo='Login')"></head>
+<head th:replace="fragments :: head (titulo='Login')">
+    <script src="https://kit.fontawesome.com/57d819f1f2.js" crossorigin="anonymous"></script>
+</head>
+
 
 <body>
 <div th:replace="fragments::barra-menu (nombreUsuario=${usuario.nombre}, id=${usuario.id})"/>
@@ -35,7 +38,9 @@
                         <td th:case="*" th:text="'Sin estado'"></td>
                     </div>
 
-                    <td><a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
+                    <td>
+                        <a class="btn btn-secondary" />archivar</a>
+                        <a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
                         <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
                            th:onclick="'del(\'/tareas/' + ${tarea.id} + '\')'">borrar</a>
                     </td>

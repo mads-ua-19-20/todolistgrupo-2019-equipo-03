@@ -17,6 +17,8 @@ public class TareaEquipo {
 
     private int estado;
 
+    private boolean archivada;
+
     @NotNull
     // Relación muchos-a-uno entre tareas y equipo
     @ManyToOne
@@ -67,6 +69,14 @@ public class TareaEquipo {
 
     public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    public boolean isArchivada() {
+        return archivada;
+    }
+
+    public void setArchivada(boolean archivada) {
+        this.archivada = archivada;
     }
 
     @Override

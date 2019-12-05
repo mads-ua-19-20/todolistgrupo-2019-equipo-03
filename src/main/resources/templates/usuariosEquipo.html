@@ -42,6 +42,7 @@
                                 <td th:case="*" th:text="'Sin estado'"></td>
                             </div>
                             <td th:if="${apuntado == true}">
+                                <a class="btn btn-secondary" />archivar</a>
                                 <a class="btn btn-primary btn-xs"
                                    th:href="@{/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar(idEquipo=${idEquipo}, idTareaEquipo=${tareaEquipo.getId()})}"/>Editar</a>
                                 <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
