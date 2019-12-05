@@ -15,7 +15,18 @@
         <div class="col-6">
             <div class="form-group">
                 <label for="titulo">Título de la tarea:</label>
-                <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/>
+                <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/><br>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="estado">Estado</label>
+                    </div>
+                    <select class="custom-select" id="estado" th:field="*{estado}">
+                        <option th:value=0 th:text="'Elige un estado...'" selected></option>
+                        <option th:value=1 th:text="'Pendiente'"></option>
+                        <option th:value=2 th:text="'En progreso'"></option>
+                        <option th:value=3 th:text="'Terminada'"></option>
+                    </select>
+                </div>
             </div>
             <button class="btn btn-primary" type="submit">Modificar tarea</button>
             <a class="btn btn-link" th:href="@{/equipos/{id}/usuarios(id=${idEquipo})}">Cancelar</a>

@@ -95,7 +95,8 @@ public class TareaEquipoWebTest {
                         // Contiene el texto de la tarea a editar
                         containsString("Limpieza"),
                         // Contiene enlace a listar tareas del usuario si se cancela la edición
-                        containsString("href=\"/equipos/1/usuarios\""))));
+                        containsString("href=\"/equipos/1/usuarios\""),
+                        containsString("Estado"))));
     }
 
     @Test

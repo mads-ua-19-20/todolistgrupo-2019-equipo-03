@@ -44,12 +44,15 @@ public class TareaEquipoService {
     }
 
     @Transactional
-    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo) {
+    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo, int nuevoEstado) {
         TareaEquipo tareaEquipo = tareaEquipoRepository.findById(idTareaEquipo).orElse(null);
         if (tareaEquipo == null) {
             throw new TareaServiceException("No existe tarea de equipo con id " + idTareaEquipo);
         }
         tareaEquipo.setTitulo(nuevoTitulo);
+        if(nuevoEstado == 1 || nuevoEstado == 2 || nuevoEstado == 3){
+            tareaEquipo.setEstado(nuevoEstado);
+        }
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
     }

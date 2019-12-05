@@ -317,7 +317,7 @@ public class EquipoController {
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
 
-        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo());
+        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado());
         flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
