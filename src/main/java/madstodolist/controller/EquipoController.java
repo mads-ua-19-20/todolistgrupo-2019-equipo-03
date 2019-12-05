@@ -1,6 +1,7 @@
 package madstodolist.controller;
 
 import madstodolist.authentication.ManagerUserSesion;
+import madstodolist.authentication.UsuarioNoLogeadoException;
 import madstodolist.controller.exception.EquipoNotFoundException;
 import madstodolist.controller.exception.TareaEquipoNotFoundException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
@@ -320,5 +321,27 @@ public class EquipoController {
         tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado());
         flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
+
+    @PostMapping("/equipos/{idEquipo}/tareas/archivar/{idTarea}")
+    @ResponseBody
+    public String archivarTarea(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTarea") Long idTarea, RedirectAttributes flash, HttpSession session){
+        System.out.println("ENTROOOOO EQUIPO ARCHIVAR");
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTarea);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        if(session.getAttribute("idUsuarioLogeado") == null){
+            throw new UsuarioNoLogeadoException();
+        }
+
+        tareaEquipoService.usuarioPerteneceEquipo((Long) session.getAttribute("idUsuarioLogeado"), idEquipo);
+
+        tareaEquipoService.archivaTarea(idTarea, true);
+
+        flash.addFlashAttribute("mensaje", "Tarea archivada correctamente");
+
+        return "";
     }
 }

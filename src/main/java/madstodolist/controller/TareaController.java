@@ -109,7 +109,6 @@ public class TareaController {
     @PostMapping("tareas/archivar/{id}")
     @ResponseBody
     public String archivarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session){
-        System.out.println("ENTROOOOO ARCHIVAR");
         Tarea tarea = tareaService.findById(idTarea);
         if (tarea == null) {
             throw new TareaNotFoundException();
