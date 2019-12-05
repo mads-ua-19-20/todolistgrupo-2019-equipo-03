@@ -133,4 +133,19 @@ public class TareaEquipoServiceTest {
         assertThat(tareaEquipoService.findById(tareaEquipo.getId())).isNull();
 
     }
+
+    @Test
+    @Transactional
+    public void testArchivarTareaEquipo(){
+        //GIVEN
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(1L);
+        boolean archivadaInicial = tareaEquipo.isArchivada();
+        //WHEN
+        tareaEquipoService.archivaTarea(1L, true);
+
+        //THEN
+
+        assertThat(archivadaInicial).isEqualTo(false);
+        assertThat(tareaEquipo.isArchivada()).isEqualTo(true);
+    }
 }

@@ -35,8 +35,9 @@ public class TareaEquipo {
     public TareaEquipo(Equipo equipo, String titulo) {
         this.equipo = equipo;
         this.titulo = titulo;
-        equipo.getTareasEquipo().add(this);
         this.estado = 1;
+        this.archivada = false;
+        equipo.getTareasEquipo().add(this);
     }
 
     public Long getId() {

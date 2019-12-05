@@ -146,6 +146,21 @@ public class TareaServiceTest {
     }
 
     @Test
+    @Transactional
+    public void testArchivarTarea(){
+        //GIVEN
+        Tarea tarea = tareaService.findById(1L);
+        boolean archivadaInicial = tarea.isArchivada();
+        //WHEN
+        tareaService.archivaTarea(1L, true);
+
+        //THEN
+
+        assertThat(archivadaInicial).isEqualTo(false);
+        assertThat(tarea.isArchivada()).isEqualTo(true);
+    }
+
+    @Test
     public void testBorrarTarea() {
         // GIVEN
 
