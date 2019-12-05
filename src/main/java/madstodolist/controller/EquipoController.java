@@ -2,10 +2,13 @@ package madstodolist.controller;
 
 import madstodolist.authentication.ManagerUserSesion;
 import madstodolist.controller.exception.EquipoNotFoundException;
+import madstodolist.controller.exception.TareaEquipoNotFoundException;
 import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.Equipo;
+import madstodolist.model.TareaEquipo;
 import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
+import madstodolist.service.TareaEquipoService;
 import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +26,9 @@ public class EquipoController {
 
     @Autowired
     EquipoService equipoService;
+
+    @Autowired
+    TareaEquipoService tareaEquipoService;
 
     @Autowired
     ManagerUserSesion managerUserSesion;
@@ -65,12 +71,14 @@ public class EquipoController {
             }
             List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
             boolean apuntado = usuariosEquipo.contains(usuario);
+            List<TareaEquipo> tareasEquipo = equipoService.tareasEquipo(idEquipo);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("usuariosEquipo", usuariosEquipo);
             model.addAttribute("nombreEquipo", equipo.getNombre());
             model.addAttribute("idEquipo", equipo.getId());
             model.addAttribute("apuntado", apuntado);
+            model.addAttribute("tareasEquipo", tareasEquipo);
         }
         else{
             throw new UsuarioNotFoundException();
@@ -217,5 +225,100 @@ public class EquipoController {
         }
 
         return "";
+    }
+
+    @GetMapping("/equipos/{id}/usuarios/tareanueva")
+    public String formNuevaTarea(@PathVariable(value="id") Long idEquipo,
+                                 @ModelAttribute TareaEquipoData tareaEquipoData, Model model,
+                                 HttpSession session) {
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        Usuario usuario = usuarioService.findById(idLog);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        Equipo equipo = equipoService.findById(idEquipo);
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("equipo", equipo);
+        return "formNuevaTareaEquipo";
+    }
+
+
+    @PostMapping("/equipos/{id}/usuarios/tareanueva")
+    public String nuevaTarea(@PathVariable(value="id") Long idEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
+                             Model model, RedirectAttributes flash,
+                             HttpSession session) {
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        Usuario usuario = usuarioService.findById(idLog);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        tareaEquipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo());
+        flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
+
+    @DeleteMapping("/tareasEquipo/{id}")
+    @ResponseBody
+    public String borrarTareaEquipo(@PathVariable(value="id") Long idTareaEquipo, RedirectAttributes flash, HttpSession session) {
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        tareaEquipoService.borraTareaEquipo(idTareaEquipo);
+        flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
+        return "";
+    }
+
+    @GetMapping("/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar")
+    public String formEditaTareaEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTareaEquipo") Long idTareaEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
+                                 Model model, HttpSession session) {
+
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session,idLog);
+
+        Usuario usuario = usuarioService.findById(idLog);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        model.addAttribute("tareaEquipo", tareaEquipo);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("idEquipo", idEquipo);
+        tareaEquipoData.setTitulo(tareaEquipo.getTitulo());
+        return "formEditarTareaEquipo";
+    }
+
+    @PostMapping("/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar")
+    public String grabaTareaEquipoModificada(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTareaEquipo") Long idTareaEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
+                                       Model model, RedirectAttributes flash, HttpSession session) {
+        TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
+        if (tareaEquipo == null) {
+            throw new TareaEquipoNotFoundException();
+        }
+
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+
+        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado());
+        flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
 }
