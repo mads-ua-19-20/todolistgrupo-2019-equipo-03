@@ -29,21 +29,24 @@
                 </thead>
                 <tbody>
                 <tr th:each="tarea: ${tareas}">
-                    <td th:text="${tarea.id}"></td>
-                    <td th:text="${tarea.titulo}"></td>
-                    <div th:switch="${tarea.estado}">
-                        <td th:case="1" th:text="'Pendiente'"></td>
-                        <td th:case="2" th:text="'En progreso'"></td>
-                        <td th:case="3" th:text="'Terminada'"></td>
-                        <td th:case="*" th:text="'Sin estado'"></td>
-                    </div>
+                    <div th:if="${tarea.archivada == false}">
+                        <td th:text="${tarea.id}"></td>
+                        <td th:text="${tarea.titulo}"></td>
+                        <div th:switch="${tarea.estado}">
+                            <td th:case="1" th:text="'Pendiente'"></td>
+                            <td th:case="2" th:text="'En progreso'"></td>
+                            <td th:case="3" th:text="'Terminada'"></td>
+                            <td th:case="*" th:text="'Sin estado'"></td>
+                        </div>
 
-                    <td>
-                        <a class="btn btn-secondary" />archivar</a>
-                        <a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
-                        <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
-                           th:onclick="'del(\'/tareas/' + ${tarea.id} + '\')'">borrar</a>
-                    </td>
+                        <td>
+                            <a class="btn btn-secondary" href="#" onmouseover="" style="cursor: pointer;"
+                               th:onclick="'arch(\'/tareas/archivar/' + ${tarea.id} + '\')'"/>archivar</a>
+                            <a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
+                            <a class="btn btn-danger btn-xs" href="#" onmouseover="" style="cursor: pointer;"
+                               th:onclick="'del(\'/tareas/' + ${tarea.id} + '\')'">borrar</a>
+                        </td>
+                    </div>
                 </tr>
                 </tbody>
             </table>
@@ -75,6 +78,19 @@
             $.ajax({
                 url: urlBorrar,
                 type: 'DELETE',
+                success: function (results) {
+                    //refresh the page
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function arch(urlArchivar) {
+        if (confirm('¿Estás seguro/a de que quieres archivar la tarea?')) {
+            $.ajax({
+                url: urlArchivar,
+                type: 'POST',
                 success: function (results) {
                     //refresh the page
                     location.reload();
