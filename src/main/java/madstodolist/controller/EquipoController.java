@@ -377,7 +377,30 @@ public class EquipoController {
 
     @GetMapping("equipos/{id}/usuarios/bloqueados")
     public String getUsuariosBloqueadosEquipo(@PathVariable(value="id") Long idEquipo, Model model, HttpSession session){
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
 
+        managerUserSesion.comprobarIdLogNotNull(id);
+
+        Usuario usuario = usuarioService.findById(id);
+
+        if(usuario !=  null){
+            Equipo equipo = equipoService.findById(idEquipo);
+            if(equipo == null){
+                throw new EquipoNotFoundException();
+            }
+
+            tareaEquipoService.usuarioPerteneceEquipo(id, idEquipo);
+            List<Usuario> usuariosBloqueados = equipoService.usuariosBloqueadosEquipo(idEquipo);
+
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
+            model.addAttribute("usuariosBloqueados", usuariosBloqueados);
+            model.addAttribute("nombreEquipo", equipo.getNombre());
+            model.addAttribute("idEquipo", equipo.getId());
+        }
+        else{
+            throw new UsuarioNotFoundException();
+        }
 
         return "usuariosBloqueadosEquipo";
     }

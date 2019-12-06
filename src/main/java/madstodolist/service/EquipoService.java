@@ -157,6 +157,12 @@ public class EquipoService {
     }
 
     @Transactional(readOnly = true)
+    public List<Usuario> usuariosBloqueadosEquipo(Long idEquipo){
+        Equipo equipo = findById(idEquipo);
+        return new ArrayList<>(equipo.getUsuariosbloq());
+    }
+
+    @Transactional(readOnly = true)
     public List<TareaEquipo> tareasEquipo(Long idEquipo){
         Equipo equipo = findById(idEquipo);
         return new ArrayList<>(equipo.getTareasEquipo());
