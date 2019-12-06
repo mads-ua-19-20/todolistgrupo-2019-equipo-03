@@ -60,7 +60,7 @@ public class TareaEquipoService {
     }
 
     @Transactional
-    public boolean usuarioPerteneceEquipo(Long idUsuario, Long idEquipo){
+    public void usuarioPerteneceEquipo(Long idUsuario, Long idEquipo){
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if(usuario == null){
             throw new UsuarioNotFoundException();
@@ -70,7 +70,9 @@ public class TareaEquipoService {
             throw  new EquipoNotFoundException();
         }
 
-        return usuario.getEquipos().contains(equipo);
+        if(!usuario.getEquipos().contains(equipo)){
+            throw new EquipoServiceException("No se puede realizar la acción. No perteneces a este equipo");
+        }
     }
 
     @Transactional

@@ -70,8 +70,11 @@ public class EquipoController {
             if(equipo == null){
                 throw new EquipoNotFoundException();
             }
+
+            boolean bloqueado = equipoService.usuarioBloqueado(idEquipo, id);
             List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
             boolean apuntado = usuariosEquipo.contains(usuario);
+
             List<TareaEquipo> tareasEquipo = equipoService.tareasEquipo(idEquipo);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
@@ -80,6 +83,7 @@ public class EquipoController {
             model.addAttribute("idEquipo", equipo.getId());
             model.addAttribute("apuntado", apuntado);
             model.addAttribute("tareasEquipo", tareasEquipo);
+            model.addAttribute("usuBloqueado", bloqueado);
         }
         else{
             throw new UsuarioNotFoundException();
@@ -330,12 +334,12 @@ public class EquipoController {
         if (tareaEquipo == null) {
             throw new TareaEquipoNotFoundException();
         }
-
-        if(session.getAttribute("idUsuarioLogeado") == null){
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        if(idLog == null){
             throw new UsuarioNoLogeadoException();
         }
 
-        tareaEquipoService.usuarioPerteneceEquipo((Long) session.getAttribute("idUsuarioLogeado"), idEquipo);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         tareaEquipoService.archivaTarea(idTarea, true);
 
@@ -349,7 +353,7 @@ public class EquipoController {
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
         if(idLog !=  null){
-            tareaEquipoService.usuarioPerteneceEquipo(idEquipo ,idLog);
+            tareaEquipoService.usuarioPerteneceEquipo(idLog ,idEquipo);
 
             Usuario usuario = usuarioService.findById(idLog);
             if (usuario == null) {

@@ -116,6 +116,22 @@ public class EquipoService {
         usuario.getEquiposbloq().add(equipo);
     }
 
+    @Transactional
+    public boolean usuarioBloqueado(Long idEquipo, Long idUsuario){
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if (equipo == null) {
+            throw new EquipoServiceException("Equipo " + idEquipo +
+                    " no existe al intentar eliminarle un usuario");
+        }
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new EquipoServiceException("Usuario " + idUsuario +
+                    " no existe al intentar eliminarlo de la lista del equipo elegido");
+        }
+
+        return equipo.getUsuariosbloq().contains(usuario);
+    }
+
     @Transactional(readOnly = true)
     public List<Equipo> findAllOrderedByName(){
         return equipoRepository.findByOrderByNombreAsc();
