@@ -374,4 +374,11 @@ public class EquipoController {
 
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
+
+    @GetMapping("equipos/{id}/usuarios/bloqueados")
+    public String getUsuariosBloqueadosEquipo(@PathVariable(value="id") Long idEquipo, Model model, HttpSession session){
+
+
+        return "usuariosBloqueadosEquipo";
+    }
 }

@@ -11,19 +11,26 @@
             </div>
         </div>
         <div th:if="${usuBloqueado} == false" class="row mt-3 col">
-            <a th:if="${apuntado == false}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='agregar', idUsuario=${idUsuario})}"
-               class="btn btn-success" th:text="'Añadirme al equipo'"/>
+            <tr>
+                <td>
+                    <a th:if="${apuntado == false}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='agregar', idUsuario=${idUsuario})}"
+                       class="btn btn-success" th:text="'Añadirme al equipo'"/>
 
-            <a th:if="${apuntado == true}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='eliminar', idUsuario=${idUsuario})}"
-               class="btn btn-danger" th:text="'Eliminarme del equipo'"/>
+                    <a th:if="${apuntado == true}" th:href="@{~/equipos/{id}/{accion}/usuario/{idUsuario} (id=${idEquipo}, accion='eliminar', idUsuario=${idUsuario})}"
+                       class="btn btn-danger" th:text="'Eliminarme del equipo'"/>
+                    <a th:if="${apuntado == true}" class="btn btn-primary" th:href="@{/equipos/{id}/usuarios/tareanueva(id=${idEquipo})}"> Nueva tarea</a>
+                    <a th:if="${apuntado == true}" class="btn btn-outline-secondary" th:href="@{/equipos/{id}/usuarios/bloqueados(id=${idEquipo})}"> Usuarios bloqueados</a>
+                <td>
+            </tr>
         </div>
+
         <div th:if="${usuBloqueado == true}" class="alert alert-danger" role="alert">
               Has sido bloqueado en este equipo.
         </div>
         <div class="row mt-3">
             <div class="col">
                 <h4 th:text="'Tareas'" style="display: inline"></h4>
-                <a th:if="${apuntado == true}" class="btn btn-primary" th:href="@{/equipos/{id}/usuarios/tareanueva(id=${idEquipo})}"> Nueva tarea</a>
+
                 <p>
                     <table class="table table-striped">
                         <thead>
