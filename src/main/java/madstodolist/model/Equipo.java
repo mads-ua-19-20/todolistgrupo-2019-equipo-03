@@ -25,6 +25,12 @@ public class Equipo {
     @OneToMany(mappedBy = "equipo", fetch = FetchType.EAGER)
     Set<TareaEquipo> tareasEquipo = new HashSet<>();
 
+    @ManyToMany()
+    @JoinTable(name = "equipo_usuariobloq",
+        joinColumns =  {@JoinColumn(name = "fk_equipo")},
+        inverseJoinColumns = {@JoinColumn(name = "fk_usuariobloq")})
+    Set<Usuario> usuariosbloq = new HashSet<>();
+
     private Equipo(){};
 
     public Equipo(String nombre){
@@ -61,6 +67,14 @@ public class Equipo {
 
     public void setTareasEquipo(Set<TareaEquipo> tareasEquipo) {
         this.tareasEquipo = tareasEquipo;
+    }
+
+    public Set<Usuario> getUsuariosbloq() {
+        return usuariosbloq;
+    }
+
+    public void setUsuariosbloq(Set<Usuario> usuariosbloq){
+        this.usuariosbloq = usuariosbloq;
     }
 
     @Override
