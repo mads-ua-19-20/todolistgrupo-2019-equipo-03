@@ -139,8 +139,10 @@ public class EquipoController {
         if(equipo == null){
             throw new EquipoNotFoundException();
         }
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
         managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         if(accion.equals("agregar")){
             equipoService.agregarUsuarioEquipo(idEquipo, idUsuario);
@@ -239,6 +241,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         Usuario usuario = usuarioService.findById(idLog);
         if (usuario == null) {
@@ -260,6 +263,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         Usuario usuario = usuarioService.findById(idLog);
         if (usuario == null) {
@@ -282,6 +286,8 @@ public class EquipoController {
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
 
+        //tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
+
         tareaEquipoService.borraTareaEquipo(idTareaEquipo);
         flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
         return "";
@@ -298,6 +304,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session,idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         Usuario usuario = usuarioService.findById(idLog);
         if (usuario == null) {
@@ -321,6 +328,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado());
         flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
