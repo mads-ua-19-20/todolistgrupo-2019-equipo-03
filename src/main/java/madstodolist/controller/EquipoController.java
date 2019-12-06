@@ -344,4 +344,11 @@ public class EquipoController {
 
         return "";
     }
+
+    @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/bloquear")
+    @ResponseBody
+    public String bloquearUsuarioEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session){
+        
+        return "";
+    }
 }
