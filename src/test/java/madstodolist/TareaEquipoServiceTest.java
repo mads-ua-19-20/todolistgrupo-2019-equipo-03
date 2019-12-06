@@ -3,6 +3,7 @@ package madstodolist;
 import madstodolist.model.Equipo;
 import madstodolist.model.TareaEquipo;
 import madstodolist.service.EquipoService;
+import madstodolist.service.EquipoServiceException;
 import madstodolist.service.TareaEquipoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -147,5 +149,21 @@ public class TareaEquipoServiceTest {
 
         assertThat(archivadaInicial).isEqualTo(false);
         assertThat(tareaEquipo.isArchivada()).isEqualTo(true);
+    }
+
+    @Test
+    @Transactional
+    public void usuarioNoPerteneceEquipo(){
+        //GIVEN
+
+
+        //WHEN
+
+
+        //THEN
+        assertThatThrownBy(() -> {
+            tareaEquipoService.usuarioPerteneceEquipo(2L, 1L);
+        }).isInstanceOf(EquipoServiceException.class);
+
     }
 }

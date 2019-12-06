@@ -71,20 +71,41 @@ public class EquipoWebTest {
         Usuario usuario = new Usuario("domingo@ua.es");
         usuario.setId(1L);
 
+        Usuario usuario2 = new Usuario("pepe@ua.es");
+        usuario.setId(2L);
+
         Equipo equipo = new Equipo("Proyecto Cobalto");
         equipo.setId(1L);
 
         List<Usuario> usuariosEquipo = new ArrayList<>();
         usuariosEquipo.add(usuario);
+        usuariosEquipo.add(usuario2);
 
         when(usuarioService.findById(null)).thenReturn(usuario);
         when(equipoService.findById(1L)).thenReturn(equipo);
         when(equipoService.usuariosEquipo(1L)).thenReturn(usuariosEquipo);
-
+        
         this.mockMvc.perform(get("/equipos/1/usuarios"))
                 .andDo(print())
                 .andExpect(content().string(containsString("Equipo Proyecto Cobalto")))
                 .andExpect(content().string(containsString("domingo@ua.es")));
+
+    }
+
+    @Test
+    public void verUsuariosEquipoBloqueado() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+
+        Equipo equipo = new Equipo("Proyecto Cobalto");
+        equipo.setId(1L);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+        when(equipoService.usuarioBloqueado(1L, null)).thenReturn(true);
+
+        this.mockMvc.perform(get("/equipos/1/usuarios"))
+                .andExpect(content().string(containsString("Has sido bloqueado en este equipo")));
 
     }
 

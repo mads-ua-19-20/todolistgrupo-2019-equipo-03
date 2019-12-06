@@ -70,8 +70,11 @@ public class EquipoController {
             if(equipo == null){
                 throw new EquipoNotFoundException();
             }
+
+            boolean bloqueado = equipoService.usuarioBloqueado(idEquipo, id);
             List<Usuario> usuariosEquipo = equipoService.usuariosEquipo(idEquipo);
             boolean apuntado = usuariosEquipo.contains(usuario);
+
             List<TareaEquipo> tareasEquipo = equipoService.tareasEquipo(idEquipo);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
@@ -80,6 +83,7 @@ public class EquipoController {
             model.addAttribute("idEquipo", equipo.getId());
             model.addAttribute("apuntado", apuntado);
             model.addAttribute("tareasEquipo", tareasEquipo);
+            model.addAttribute("usuBloqueado", bloqueado);
         }
         else{
             throw new UsuarioNotFoundException();
@@ -235,6 +239,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         Usuario usuario = usuarioService.findById(idLog);
         if (usuario == null) {
@@ -256,6 +261,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         Usuario usuario = usuarioService.findById(idLog);
         if (usuario == null) {
@@ -278,6 +284,8 @@ public class EquipoController {
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
 
+        //tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
+
         tareaEquipoService.borraTareaEquipo(idTareaEquipo);
         flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
         return "";
@@ -294,6 +302,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session,idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         Usuario usuario = usuarioService.findById(idLog);
         if (usuario == null) {
@@ -317,6 +326,7 @@ public class EquipoController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado());
         flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
@@ -326,22 +336,42 @@ public class EquipoController {
     @PostMapping("/equipos/{idEquipo}/tareas/archivar/{idTarea}")
     @ResponseBody
     public String archivarTarea(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTarea") Long idTarea, RedirectAttributes flash, HttpSession session){
-        System.out.println("ENTROOOOO EQUIPO ARCHIVAR");
         TareaEquipo tareaEquipo = tareaEquipoService.findById(idTarea);
         if (tareaEquipo == null) {
             throw new TareaEquipoNotFoundException();
         }
-
-        if(session.getAttribute("idUsuarioLogeado") == null){
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+        if(idLog == null){
             throw new UsuarioNoLogeadoException();
         }
 
-        tareaEquipoService.usuarioPerteneceEquipo((Long) session.getAttribute("idUsuarioLogeado"), idEquipo);
+        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         tareaEquipoService.archivaTarea(idTarea, true);
 
         flash.addFlashAttribute("mensaje", "Tarea archivada correctamente");
 
         return "";
+    }
+
+    @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/bloquear")
+    public String bloquearUsuarioEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session, Model model){
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        if(idLog !=  null){
+            tareaEquipoService.usuarioPerteneceEquipo(idLog ,idEquipo);
+
+            Usuario usuario = usuarioService.findById(idLog);
+            if (usuario == null) {
+                throw new UsuarioNotFoundException();
+            }
+
+            equipoService.bloquearUsuario(idEquipo, idUsuario, idLog);
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
 }
