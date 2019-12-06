@@ -139,10 +139,8 @@ public class EquipoController {
         if(equipo == null){
             throw new EquipoNotFoundException();
         }
-        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
         managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
-        tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
         if(accion.equals("agregar")){
             equipoService.agregarUsuarioEquipo(idEquipo, idUsuario);
