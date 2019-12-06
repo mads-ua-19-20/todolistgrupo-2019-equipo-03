@@ -102,26 +102,33 @@ public class EquipoService {
     }
 
     @Transactional
-    public void bloquearUsuario(Long idEquipo, Long idUsuario, Long idLog){
+    public void bloquearUsuario(Long idEquipo, Long idUsuario, Long idLog, boolean accion){
         if(idUsuario == idLog){
-            throw  new EquipoServiceException("No puedes bloquearte a ti mismo");
+            throw  new EquipoServiceException("No puedes bloquearte/desbloquearte a ti mism@");
         }
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
         if (equipo == null) {
             throw new EquipoServiceException("Equipo " + idEquipo +
-                    " no existe al intentar eliminarle un usuario");
+                    " no existe al intentar bloquear un usuario");
         }
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if (usuario == null) {
             throw new EquipoServiceException("Usuario " + idUsuario +
-                    " no existe al intentar eliminarlo de la lista del equipo elegido");
+                    " no existe al intentar bloquearlo del equipo elegido");
         }
+        if(accion){
+            equipo.getUsuarios().remove(usuario);
+            usuario.getEquipos().remove(equipo);
 
-        equipo.getUsuarios().remove(usuario);
-        usuario.getEquipos().remove(equipo);
+            equipo.getUsuariosbloq().add(usuario);
+            usuario.getEquiposbloq().add(equipo);
+        } else if(!accion) {
+            equipo.getUsuariosbloq().remove(usuario);
+            usuario.getEquiposbloq().remove(equipo);
 
-        equipo.getUsuariosbloq().add(usuario);
-        usuario.getEquiposbloq().add(equipo);
+            equipo.getUsuarios().add(usuario);
+            usuario.getEquipos().add(equipo);
+        }
     }
 
     @Transactional

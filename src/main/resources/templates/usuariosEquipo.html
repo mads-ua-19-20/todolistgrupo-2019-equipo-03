@@ -84,7 +84,7 @@
                             <td th:text="${usuario.nombre}"></td>
                             <td th:text="${usuario.email}"></td>
                             <td th:if="${apuntado} == true">
-                                <a th:if="${nombreUsuario} != ${usuario.nombre}" th:href="@{~/equipos/{idEquipo}/usuarios/{idUsuario}/bloquear (idUsuario=${usuario.id}, idEquipo=${id})}" class="btn btn-danger" th:text="'Bloquear'"/>
+                                <a th:if="${nombreUsuario} != ${usuario.nombre}" th:href="@{~/equipos/{idEquipo}/usuarios/{idUsuario}/{accion} (accion='bloquear',idUsuario=${usuario.id}, idEquipo=${id})}" class="btn btn-danger" th:text="'Bloquear'"/>
                             </td>
                         </tr>
                         </tbody>

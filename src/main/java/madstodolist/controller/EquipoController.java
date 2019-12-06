@@ -354,8 +354,8 @@ public class EquipoController {
         return "";
     }
 
-    @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/bloquear")
-    public String bloquearUsuarioEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session, Model model){
+    @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/{accion}")
+    public String bloquearUsuarioEquipo(@PathVariable(value="accion") String accion, @PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session, Model model){
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
         if(idLog !=  null){
@@ -365,8 +365,11 @@ public class EquipoController {
             if (usuario == null) {
                 throw new UsuarioNotFoundException();
             }
-
-            equipoService.bloquearUsuario(idEquipo, idUsuario, idLog);
+            if(accion.equals("bloquear")){
+                equipoService.bloquearUsuario(idEquipo, idUsuario, idLog, true);
+            } else if(accion.equals("desbloquear")){
+                equipoService.bloquearUsuario(idEquipo, idUsuario, idLog, false);
+            }
         }
         else{
             throw new UsuarioNoLogeadoException();

@@ -19,6 +19,7 @@
                     <th>Id</th>
                     <th>Nombre</th>
                     <th>E-mail</th>
+                    <th>Accion</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,6 +27,10 @@
                     <td th:text="${usuario.id}"></td>
                     <td th:text="${usuario.nombre}"></td>
                     <td th:text="${usuario.email}"></td>
+                    <td>
+                        <a th:href="@{~/equipos/{idEquipo}/usuarios/{idUsuario}/{accion} (accion='desbloquear', idUsuario=${usuario.id}, idEquipo=${id})}"
+                           class="btn btn-success" th:text="'Desbloquear'"/>
+                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -276,7 +276,7 @@ public class EquipoServiceTest {
         Equipo equipo = equipoService.findById(1L);
 
         //WHEN
-        equipoService.bloquearUsuario(1L, 2L, 3L);
+        equipoService.bloquearUsuario(1L, 2L, 3L, true);
 
         //THEN
         assertThat(equipo.getUsuarios()).doesNotContain(usuario);
@@ -293,7 +293,7 @@ public class EquipoServiceTest {
 
         //THEN
         assertThatThrownBy(() -> {
-            equipoService.bloquearUsuario(1L, 2L, 2L);
+            equipoService.bloquearUsuario(1L, 2L, 2L, true);
         }).isInstanceOf(EquipoServiceException.class);
     }
 
@@ -307,7 +307,7 @@ public class EquipoServiceTest {
 
         //THEN
         assertThatThrownBy(() -> {
-            equipoService.bloquearUsuario(1L, 0L, 2L);
+            equipoService.bloquearUsuario(1L, 0L, 2L, true);
         }).isInstanceOf(EquipoServiceException.class);
     }
 
@@ -321,7 +321,7 @@ public class EquipoServiceTest {
 
         //THEN
         assertThatThrownBy(() -> {
-            equipoService.bloquearUsuario(0L, 1L, 2L);
+            equipoService.bloquearUsuario(0L, 1L, 2L, true);
         }).isInstanceOf(EquipoServiceException.class);
     }
 
