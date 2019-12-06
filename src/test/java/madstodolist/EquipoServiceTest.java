@@ -267,4 +267,75 @@ public class EquipoServiceTest {
             equipoService.borraEquipo(0L);
         }).isInstanceOf(EquipoServiceException.class);
     }
+
+    @Test
+    @Transactional
+    public void bloquearUsuario(){
+        //GIVEN
+        Usuario usuario = usuarioService.findById(2L);
+        Equipo equipo = equipoService.findById(1L);
+
+        //WHEN
+        equipoService.bloquearUsuario(1L, 2L, 3L);
+
+        //THEN
+        assertThat(equipo.getUsuarios()).doesNotContain(usuario);
+        assertThat(equipo.getUsuariosbloq()).contains(usuario);
+    }
+
+    @Test
+    public void bloquearUsuarioLogeado(){
+        //GIVEN
+
+
+        //WHEN
+
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.bloquearUsuario(1L, 2L, 2L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
+
+    @Test
+    public void bloquearUsuarioInexistente(){
+        //GIVEN
+
+
+        //WHEN
+
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.bloquearUsuario(1L, 0L, 2L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
+
+    @Test
+    public void bloquearUsuarioEquipoInexistente(){
+        //GIVEN
+
+
+        //WHEN
+
+
+        //THEN
+        assertThatThrownBy(() -> {
+            equipoService.bloquearUsuario(0L, 1L, 2L);
+        }).isInstanceOf(EquipoServiceException.class);
+    }
+
+    @Test
+    @Transactional
+    public void comprobarUsuarioBloqueado(){
+        //GIVEN
+
+        //WHEN
+        boolean resultado1 = equipoService.usuarioBloqueado(1L, 2L);
+        boolean resultado2 = equipoService.usuarioBloqueado(1L, 1L);
+
+        //THEN
+        assertThat(resultado1).isEqualTo(true);
+        assertThat(resultado2).isEqualTo(false);
+    }
 }

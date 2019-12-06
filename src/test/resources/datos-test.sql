@@ -8,3 +8,5 @@ INSERT INTO equipo_usuario (fk_equipo, fk_usuario) VALUES('1', '1');
 INSERT INTO equipos (id, nombre) VALUES('2', 'Proyecto Adamantium');
 
 INSERT INTO tareasequipo (id, titulo, equipo_id, estado, archivada) VALUES('1', 'Limpieza almacén', '1', '1', false);
+
+INSERT INTO equipo_usuariobloq (fk_equipo, fk_usuariobloq) VALUES('1', '2');
