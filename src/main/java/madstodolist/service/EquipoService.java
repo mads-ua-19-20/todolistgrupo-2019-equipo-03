@@ -93,6 +93,29 @@ public class EquipoService {
         equipoRepository.delete(equipo);
     }
 
+    @Transactional
+    public void bloquearUsuario(Long idEquipo, Long idUsuario, Long idLog){
+        if(idUsuario == idLog){
+            throw  new EquipoServiceException("No puedes bloquearte a ti mismo");
+        }
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if (equipo == null) {
+            throw new EquipoServiceException("Equipo " + idEquipo +
+                    " no existe al intentar eliminarle un usuario");
+        }
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new EquipoServiceException("Usuario " + idUsuario +
+                    " no existe al intentar eliminarlo de la lista del equipo elegido");
+        }
+
+        equipo.getUsuarios().remove(usuario);
+        usuario.getEquipos().remove(equipo);
+
+        equipo.getUsuariosbloq().add(usuario);
+        usuario.getEquiposbloq().add(equipo);
+    }
+
     @Transactional(readOnly = true)
     public List<Equipo> findAllOrderedByName(){
         return equipoRepository.findByOrderByNombreAsc();

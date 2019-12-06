@@ -326,7 +326,6 @@ public class EquipoController {
     @PostMapping("/equipos/{idEquipo}/tareas/archivar/{idTarea}")
     @ResponseBody
     public String archivarTarea(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTarea") Long idTarea, RedirectAttributes flash, HttpSession session){
-        System.out.println("ENTROOOOO EQUIPO ARCHIVAR");
         TareaEquipo tareaEquipo = tareaEquipoService.findById(idTarea);
         if (tareaEquipo == null) {
             throw new TareaEquipoNotFoundException();
@@ -346,9 +345,23 @@ public class EquipoController {
     }
 
     @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/bloquear")
-    @ResponseBody
-    public String bloquearUsuarioEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session){
-        
-        return "";
+    public String bloquearUsuarioEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session, Model model){
+        Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
+
+        if(idLog !=  null){
+            tareaEquipoService.usuarioPerteneceEquipo(idEquipo ,idLog);
+
+            Usuario usuario = usuarioService.findById(idLog);
+            if (usuario == null) {
+                throw new UsuarioNotFoundException();
+            }
+
+            equipoService.bloquearUsuario(idEquipo, idUsuario, idLog);
+        }
+        else{
+            throw new UsuarioNoLogeadoException();
+        }
+
+        return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
 }
