@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,6 +40,7 @@ public class TareaEquipoTest {
         assertThat(tareaEquipo.getTitulo()).isEqualTo("Cambiar ruedas bicicleta");
         assertThat(tareaEquipo.getEquipo()).isEqualTo(equipo);
         assertThat(tareaEquipo.getEstado()).isEqualTo(1);
+        assertThat(tareaEquipo.isArchivada()).isEqualTo(false);
     }
 
     @Test

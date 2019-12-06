@@ -47,6 +47,7 @@ public class TareaTest {
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getEstado()).isEqualTo(1);
         assertThat(tarea.getFechaLimite()).isEqualTo(fechaLimite);
+        assertThat(tarea.isArchivada()).isEqualTo(false);
     }
 
     @Test

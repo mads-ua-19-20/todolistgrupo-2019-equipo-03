@@ -1,5 +1,7 @@
 package madstodolist.service;
 
+import madstodolist.controller.exception.EquipoNotFoundException;
+import madstodolist.controller.exception.UsuarioNotFoundException;
 import madstodolist.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +57,30 @@ public class TareaEquipoService {
         }
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
+    }
+
+    @Transactional
+    public boolean usuarioPerteneceEquipo(Long idUsuario, Long idEquipo){
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if(usuario == null){
+            throw new UsuarioNotFoundException();
+        }
+        Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
+        if(equipo == null){
+            throw  new EquipoNotFoundException();
+        }
+
+        return usuario.getEquipos().contains(equipo);
+    }
+
+    @Transactional
+    public void archivaTarea(Long idTarea, boolean archivar){
+        TareaEquipo tareaEquipo = tareaEquipoRepository.findById(idTarea).orElse(null);
+        if (tareaEquipo == null) {
+            throw new TareaServiceException("No existe tarea con id " + idTarea);
+        }
+
+        tareaEquipo.setArchivada(archivar);
+        tareaEquipoRepository.save(tareaEquipo);
     }
 }

@@ -17,6 +17,8 @@ public class Tarea implements Serializable {
 
     private int estado;
 
+    private boolean archivada;
+
     private Date fechalimite;
 
     @NotNull
@@ -44,6 +46,7 @@ public class Tarea implements Serializable {
         this.titulo = titulo;
         this.estado = 1;
         this.fechalimite = fechalimite;
+        this.archivada = false;
         usuario.getTareas().add(this);
     }
 
@@ -78,6 +81,14 @@ public class Tarea implements Serializable {
     public Date getFechaLimite() { return fechalimite; }
 
     public void setFechaLimite(Date fechalimite) { this.fechalimite = fechalimite; }
+
+    public boolean isArchivada() {
+        return archivada;
+    }
+
+    public void setArchivada(boolean archivada) {
+        this.archivada = archivada;
+    }
 
     @Override
     public boolean equals(Object o) {
