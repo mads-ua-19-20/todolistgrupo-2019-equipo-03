@@ -297,4 +297,26 @@ public class EquipoWebTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void verListadoUsuariosBloqEquipos() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+
+        Equipo equipo = new Equipo("Proyecto Cobalto");
+        equipo.setId(1L);
+
+        List<Usuario> usuariosBloq = new ArrayList<>();
+        usuariosBloq.add(usuario);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+        when(equipoService.usuariosBloqueadosEquipo(1L)).thenReturn(usuariosBloq);
+
+        this.mockMvc.perform(get("/equipos/1/usuarios/bloqueados"))
+                .andDo(print())
+                .andExpect(content().string(containsString("Listado de usuarios bloqueados en Proyecto Cobalto")))
+                .andExpect(content().string(containsString("domingo@ua.es")))
+                .andExpect(content().string(containsString("Desbloquear")));
+    }
 }
