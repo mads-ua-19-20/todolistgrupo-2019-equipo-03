@@ -92,6 +92,24 @@ public class EquipoServiceTest {
     }
 
     @Test
+    public void obtenerUsuariosBloqueadosEquipo() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        // WHEN
+        List<Usuario> usuariosBloq = equipoService.usuariosBloqueadosEquipo(1L);
+
+        // THEN
+        assertThat(usuariosBloq).hasSize(1);
+        assertThat(usuariosBloq.get(0).getEmail()).isEqualTo("pepe.garcia@gmail.com");
+        // Comprobamos que la relación entre usuarios y equipos es eager
+        // Primero comprobamos que la colección de equipos tiene 1 elemento
+        assertThat(usuariosBloq.get(0).getEquiposbloq()).hasSize(1);
+        // Y después que el elemento es el equipo Proyecto Cobalto
+        assertThat(usuariosBloq.get(0).getEquiposbloq().stream().findFirst().get().getNombre()).isEqualTo("Proyecto Cobalto");
+    }
+
+    @Test
     @Transactional
     public void testNuevoEquipo(){
         //WHEN
@@ -272,15 +290,31 @@ public class EquipoServiceTest {
     @Transactional
     public void bloquearUsuario(){
         //GIVEN
-        Usuario usuario = usuarioService.findById(2L);
+        Usuario usuario = usuarioService.findById(1L);
         Equipo equipo = equipoService.findById(1L);
 
         //WHEN
-        equipoService.bloquearUsuario(1L, 2L, 3L);
+        equipoService.bloquearUsuario(1L, 1L, 3L, true);
 
         //THEN
         assertThat(equipo.getUsuarios()).doesNotContain(usuario);
         assertThat(equipo.getUsuariosbloq()).contains(usuario);
+    }
+
+    @Test
+    @Transactional
+    public void desbloquearUsuario(){
+        //GIVEN
+        Usuario usuario = usuarioService.findById(2L);
+        Equipo equipo = equipoService.findById(1L);
+        boolean estabaBloqueado = equipo.getUsuariosbloq().contains(usuario);
+        //WHEN
+        equipoService.bloquearUsuario(1L, 2L, 3L, false);
+
+        //THEN
+        assertThat(equipo.getUsuariosbloq()).doesNotContain(usuario);
+        assertThat(equipo.getUsuarios()).contains(usuario);
+        assertThat(estabaBloqueado).isEqualTo(true);
     }
 
     @Test
@@ -293,7 +327,7 @@ public class EquipoServiceTest {
 
         //THEN
         assertThatThrownBy(() -> {
-            equipoService.bloquearUsuario(1L, 2L, 2L);
+            equipoService.bloquearUsuario(1L, 2L, 2L, true);
         }).isInstanceOf(EquipoServiceException.class);
     }
 
@@ -307,7 +341,7 @@ public class EquipoServiceTest {
 
         //THEN
         assertThatThrownBy(() -> {
-            equipoService.bloquearUsuario(1L, 0L, 2L);
+            equipoService.bloquearUsuario(1L, 0L, 2L, true);
         }).isInstanceOf(EquipoServiceException.class);
     }
 
@@ -321,7 +355,7 @@ public class EquipoServiceTest {
 
         //THEN
         assertThatThrownBy(() -> {
-            equipoService.bloquearUsuario(0L, 1L, 2L);
+            equipoService.bloquearUsuario(0L, 1L, 2L, true);
         }).isInstanceOf(EquipoServiceException.class);
     }
 

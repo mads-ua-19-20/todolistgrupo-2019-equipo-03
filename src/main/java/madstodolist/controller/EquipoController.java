@@ -354,8 +354,8 @@ public class EquipoController {
         return "";
     }
 
-    @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/bloquear")
-    public String bloquearUsuarioEquipo(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session, Model model){
+    @GetMapping("equipos/{idEquipo}/usuarios/{idUsuario}/{accion}")
+    public String bloquearUsuarioEquipo(@PathVariable(value="accion") String accion, @PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idUsuario") Long idUsuario, HttpSession session, Model model){
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
         if(idLog !=  null){
@@ -365,13 +365,46 @@ public class EquipoController {
             if (usuario == null) {
                 throw new UsuarioNotFoundException();
             }
-
-            equipoService.bloquearUsuario(idEquipo, idUsuario, idLog);
+            if(accion.equals("bloquear")){
+                equipoService.bloquearUsuario(idEquipo, idUsuario, idLog, true);
+            } else if(accion.equals("desbloquear")){
+                equipoService.bloquearUsuario(idEquipo, idUsuario, idLog, false);
+            }
         }
         else{
             throw new UsuarioNoLogeadoException();
         }
 
         return "redirect:/equipos/" + idEquipo + "/usuarios";
+    }
+
+    @GetMapping("equipos/{id}/usuarios/bloqueados")
+    public String getUsuariosBloqueadosEquipo(@PathVariable(value="id") Long idEquipo, Model model, HttpSession session){
+        Long id = (Long) session.getAttribute("idUsuarioLogeado");
+
+        managerUserSesion.comprobarIdLogNotNull(id);
+
+        Usuario usuario = usuarioService.findById(id);
+
+        if(usuario !=  null){
+            Equipo equipo = equipoService.findById(idEquipo);
+            if(equipo == null){
+                throw new EquipoNotFoundException();
+            }
+
+            tareaEquipoService.usuarioPerteneceEquipo(id, idEquipo);
+            List<Usuario> usuariosBloqueados = equipoService.usuariosBloqueadosEquipo(idEquipo);
+
+            model.addAttribute("nombreUsuario", usuario.getNombre());
+            model.addAttribute("idUsuario", usuario.getId());
+            model.addAttribute("usuariosBloqueados", usuariosBloqueados);
+            model.addAttribute("nombreEquipo", equipo.getNombre());
+            model.addAttribute("idEquipo", equipo.getId());
+        }
+        else{
+            throw new UsuarioNotFoundException();
+        }
+
+        return "usuariosBloqueadosEquipo";
     }
 }
