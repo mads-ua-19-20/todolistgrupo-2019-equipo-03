@@ -77,6 +77,7 @@ public class TareaWebTest {
                     containsString("Lavar el coche"),
                     // Contiene enlace a listar tareas del usuario si se cancela la edición
                     containsString("href=\"/usuarios/1/tareas\""),
+                    containsString("Fecha límite"),
                     containsString("Estado"))));
     }
 }
