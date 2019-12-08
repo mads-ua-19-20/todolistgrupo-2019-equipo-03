@@ -10,10 +10,12 @@ import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -47,8 +49,8 @@ public class TareaController {
     }
 
     @PostMapping("/usuarios/{id}/tareas/nueva")
-    public String nuevaTarea(@PathVariable(value="id") Long idUsuario, @ModelAttribute TareaData tareaData,
-                             Model model, RedirectAttributes flash,
+    public String nuevaTarea(@PathVariable(value="id") Long idUsuario, @Valid TareaData tareaData,
+                             BindingResult result, Model model, RedirectAttributes flash,
                              HttpSession session) {
 
         managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
@@ -56,6 +58,10 @@ public class TareaController {
         Usuario usuario = usuarioService.findById(idUsuario);
         if (usuario == null) {
             throw new UsuarioNotFoundException();
+        }
+
+        if (result.hasErrors()) {
+            return "redirect:/usuarios/" + idUsuario + "/tareas/nueva";
         }
 
         tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo(), tareaData.getFechalimite());
@@ -100,14 +106,18 @@ public class TareaController {
     }
 
     @PostMapping("/tareas/{id}/editar")
-    public String grabaTareaModificada(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
-                                       Model model, RedirectAttributes flash, HttpSession session) {
+    public String grabaTareaModificada(@PathVariable(value="id") Long idTarea, @Valid TareaData tareaData,
+                                       BindingResult result, Model model, RedirectAttributes flash, HttpSession session) {
         Tarea tarea = tareaService.findById(idTarea);
         if (tarea == null) {
             throw new TareaNotFoundException();
         }
 
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
+
+        if (result.hasErrors()) {
+            return "redirect:/tareas/" + idTarea + "/editar";
+        }
 
         tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado(), tareaData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea modificada correctamente");
