@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -30,13 +32,13 @@ public class TareaServiceTest {
 
 
     @Test
-    public void testNuevaTareaUsuario() {
+    public void testNuevaTareaUsuario() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         // WHEN
-        Date fechaLimite = new Date(1575375150L);
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Práctica 1 de MADS", fechaLimite);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Práctica 1 de MADS", sdf.parse("2019-09-10"));
 
         // THEN
 
@@ -81,19 +83,18 @@ public class TareaServiceTest {
 
     @Test
     @Transactional
-    public void testModificarTarea() {
+    public void testModificarTarea() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
-        Date fechaLimite = new Date(1575375150L);
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", fechaLimite);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", sdf.parse("2019-09-10"));
         Long idNuevaTarea = tarea.getId();
         int estadoInicial = tarea.getEstado();
 
         // WHEN
-        fechaLimite.setTime(1575375844L);
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 0, fechaLimite);
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 0, sdf.parse("2019-09-25"));
         Tarea tareaBD = tareaService.findById(idNuevaTarea);
 
         // THEN
@@ -101,7 +102,7 @@ public class TareaServiceTest {
         assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
         assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
         assertThat(tareaBD.getEstado()).isEqualTo(estadoInicial);
-        assertThat(tareaBD.getFechaLimite()).isEqualTo(fechaLimite);
+        assertThat(tareaBD.getFechaLimite()).isEqualTo(sdf.parse("2019-09-25"));
     }
 
     @Test
@@ -126,16 +127,16 @@ public class TareaServiceTest {
 
     @Test
     @Transactional
-    public void testModificarTareaFechaLimite() {
-        Date fechaLimite = new Date(1575375150L);
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", fechaLimite);
+    public void testModificarTareaFechaLimite() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", sdf.parse("2019-09-10"));
         Long idNuevaTarea = tarea.getId();
         Date fechaInicial = tarea.getFechaLimite();
 
         // WHEN
-        Date fechaLimite2 = new Date(1595375844L);
-        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2, fechaLimite2);
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2, sdf.parse("2019-09-25"));
         Tarea tareaBD = tareaService.findById(idNuevaTarea);
+        Date fechaLimite2 = tarea.getFechaLimite();
 
         // THEN
 

@@ -19,6 +19,7 @@ public class Tarea implements Serializable {
 
     private boolean archivada;
 
+    @Temporal(TemporalType.DATE)
     private Date fechalimite;
 
     @NotNull

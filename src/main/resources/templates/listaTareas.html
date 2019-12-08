@@ -24,6 +24,7 @@
                     <th>Id</th>
                     <th>Tarea</th>
                     <th>Estado</th>
+                    <th>Fecha Límite</th>
                     <th>Acción</th>
                 </tr>
                 </thead>
@@ -38,6 +39,7 @@
                             <td th:case="3" th:text="'Terminada'"></td>
                             <td th:case="*" th:text="'Sin estado'"></td>
                         </div>
+                        <td th:class="${tarea.fechaLimite > fecha} ? '' : 'text-danger'" th:text="${tarea.fechaLimite}"></td>
 
                         <td>
                             <a class="btn btn-secondary" href="#" onmouseover="" style="cursor: pointer;"
