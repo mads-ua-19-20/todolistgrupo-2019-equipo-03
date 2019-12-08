@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -38,15 +40,15 @@ public class TareaTest {
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
 
         // WHEN
-        Date fechaLimite = new Date(1575375150L);
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", fechaLimite);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", sdf.parse("2019-09-10"));
 
         // THEN
 
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getEstado()).isEqualTo(1);
-        assertThat(tarea.getFechaLimite()).isEqualTo(fechaLimite);
+        assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
     }
 
     @Test
@@ -70,13 +72,13 @@ public class TareaTest {
 
     @Test
     @Transactional
-    public void crearTareaEnBaseDatos() {
+    public void crearTareaEnBaseDatos() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         Usuario usuario = usuarioRepository.findById(1L).orElse(null);
-        Date fechaLimite = new Date(1575375150L);
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", fechaLimite);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", sdf.parse("2019-09-10"));
 
         // WHEN
 
@@ -87,7 +89,7 @@ public class TareaTest {
         assertThat(tarea.getId()).isNotNull();
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
-        assertThat(tarea.getFechaLimite()).isEqualTo(fechaLimite);
+        assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
     }
 
     @Test(expected = Exception.class)
