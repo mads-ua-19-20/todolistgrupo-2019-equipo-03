@@ -15,6 +15,10 @@ public class TareaEquipo {
     @NotNull
     private String titulo;
 
+    private int estado;
+
+    private boolean archivada;
+
     @NotNull
     // Relación muchos-a-uno entre tareas y equipo
     @ManyToOne
@@ -31,6 +35,8 @@ public class TareaEquipo {
     public TareaEquipo(Equipo equipo, String titulo) {
         this.equipo = equipo;
         this.titulo = titulo;
+        this.estado = 1;
+        this.archivada = false;
         equipo.getTareasEquipo().add(this);
     }
 
@@ -58,6 +64,21 @@ public class TareaEquipo {
         this.equipo = equipo;
     }
 
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    public boolean isArchivada() {
+        return archivada;
+    }
+
+    public void setArchivada(boolean archivada) {
+        this.archivada = archivada;
+    }
 
     @Override
     public boolean equals(Object o) {

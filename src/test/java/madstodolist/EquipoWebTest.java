@@ -71,20 +71,41 @@ public class EquipoWebTest {
         Usuario usuario = new Usuario("domingo@ua.es");
         usuario.setId(1L);
 
+        Usuario usuario2 = new Usuario("pepe@ua.es");
+        usuario.setId(2L);
+
         Equipo equipo = new Equipo("Proyecto Cobalto");
         equipo.setId(1L);
 
         List<Usuario> usuariosEquipo = new ArrayList<>();
         usuariosEquipo.add(usuario);
+        usuariosEquipo.add(usuario2);
 
         when(usuarioService.findById(null)).thenReturn(usuario);
         when(equipoService.findById(1L)).thenReturn(equipo);
         when(equipoService.usuariosEquipo(1L)).thenReturn(usuariosEquipo);
-
+        
         this.mockMvc.perform(get("/equipos/1/usuarios"))
                 .andDo(print())
                 .andExpect(content().string(containsString("Equipo Proyecto Cobalto")))
                 .andExpect(content().string(containsString("domingo@ua.es")));
+
+    }
+
+    @Test
+    public void verUsuariosEquipoBloqueado() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+
+        Equipo equipo = new Equipo("Proyecto Cobalto");
+        equipo.setId(1L);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+        when(equipoService.usuarioBloqueado(1L, null)).thenReturn(true);
+
+        this.mockMvc.perform(get("/equipos/1/usuarios"))
+                .andExpect(content().string(containsString("Has sido bloqueado en este equipo")));
 
     }
 
@@ -275,5 +296,27 @@ public class EquipoWebTest {
         this.mockMvc.perform((delete("/equipos/1")))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void verListadoUsuariosBloqEquipos() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+
+        Equipo equipo = new Equipo("Proyecto Cobalto");
+        equipo.setId(1L);
+
+        List<Usuario> usuariosBloq = new ArrayList<>();
+        usuariosBloq.add(usuario);
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(equipoService.findById(1L)).thenReturn(equipo);
+        when(equipoService.usuariosBloqueadosEquipo(1L)).thenReturn(usuariosBloq);
+
+        this.mockMvc.perform(get("/equipos/1/usuarios/bloqueados"))
+                .andDo(print())
+                .andExpect(content().string(containsString("Listado de usuarios bloqueados en Proyecto Cobalto")))
+                .andExpect(content().string(containsString("domingo@ua.es")))
+                .andExpect(content().string(containsString("Desbloquear")));
     }
 }

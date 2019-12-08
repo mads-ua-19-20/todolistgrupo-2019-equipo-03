@@ -49,6 +49,7 @@ public class TareaTest {
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getEstado()).isEqualTo(1);
         assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
+        assertThat(tarea.isArchivada()).isEqualTo(false);
     }
 
     @Test

@@ -99,6 +99,20 @@ public class EquipoTest {
     }
 
     @Test
+    public void relaciónMuchosAMuchosVaciaUsuariosBlod() {
+        // GIVEN
+
+        Equipo equipo = new Equipo("Proyecto Cobalto");
+        Usuario usuario = new Usuario("prueba@gmail.com");
+
+        // WHEN
+        // THEN
+
+        assertThat(equipo.getUsuariosbloq()).isEmpty();
+        assertThat(usuario.getEquiposbloq()).isEmpty();
+    }
+
+    @Test
     @Transactional
     public void comprobarRelacionBaseDatos() {
         // GIVEN
@@ -114,6 +128,24 @@ public class EquipoTest {
         assertThat(equipo.getUsuarios()).contains(usuario);
         assertThat(usuario.getEquipos()).hasSize(1);
         assertThat(usuario.getEquipos()).contains(equipo);
+    }
+
+    @Test
+    @Transactional
+    public void comprobarRelacionBaseDatosUsuarioBloq() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        // WHEN
+        Equipo equipo = equipoRepository.findById(1L).orElse(null);
+        Usuario usuario = usuarioRepository.findById(2L).orElse(null);
+
+        // THEN
+
+        assertThat(equipo.getUsuariosbloq()).hasSize(1);
+        assertThat(equipo.getUsuariosbloq()).contains(usuario);
+        assertThat(usuario.getEquiposbloq()).hasSize(1);
+        assertThat(usuario.getEquiposbloq()).contains(equipo);
     }
 
     @Test

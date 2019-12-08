@@ -124,6 +124,22 @@ public class TareaController {
         return "redirect:/usuarios/" + tarea.getUsuario().getId() + "/tareas";
     }
 
+    @PostMapping("tareas/archivar/{id}")
+    @ResponseBody
+    public String archivarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session){
+        Tarea tarea = tareaService.findById(idTarea);
+        if (tarea == null) {
+            throw new TareaNotFoundException();
+        }
+
+        managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
+
+        tareaService.archivaTarea(idTarea, true);
+        flash.addFlashAttribute("mensaje", "Tarea archivada correctamente");
+
+        return "";
+    }
+
     @DeleteMapping("/tareas/{id}")
     @ResponseBody
     public String borrarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session) {
@@ -135,7 +151,7 @@ public class TareaController {
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
 
         tareaService.borraTarea(idTarea);
-        flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
+
         return "";
     }
 }
