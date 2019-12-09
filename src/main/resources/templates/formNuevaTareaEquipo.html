@@ -14,6 +14,16 @@
             <div class="form-group">
                 <label for="titulo">Título de la tarea:</label>
                 <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/>
+                <br>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="asignacion">Asignación</label>
+                    </div>
+                    <select class="custom-select" id="asignacion" th:field="*{asignacion}">
+                        <option th:value="null" th:text="'Sin asignar'"></option>
+                        <option th:each="usu: ${equipo.getUsuarios()}" th:value="${usu.getId()}" th:text="${usu.getNombre()}"></option>
+                    </select>
+                </div>
             </div>
             <button class="btn btn-primary" type="submit">Crear tarea</button>
             <a class="btn btn-link" th:href="@{/equipos/{id}/usuarios(id=${equipo.getId()})}">Cancelar</a>
