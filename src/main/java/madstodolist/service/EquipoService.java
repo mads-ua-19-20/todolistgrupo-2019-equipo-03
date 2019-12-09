@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class EquipoService {
@@ -72,6 +69,27 @@ public class EquipoService {
 
             equipo.getUsuarios().remove(usuario);
             usuario.getEquipos().remove(equipo);
+
+            for(TareaEquipo tareaEquipo : equipo.getTareasEquipo())
+            {
+                if(tareaEquipo.getUsuario() != null) {
+                    if (tareaEquipo.getUsuario().getId() == usuario.getId()) {
+                        tareaEquipo.setUsuario(null);
+                    }
+                }
+            }
+
+            Iterator<TareaEquipo> iterator = usuario.getTareasEquipoAsignadas().iterator();
+            while(iterator.hasNext())
+            {
+                TareaEquipo tareaEquipo = iterator.next();
+
+                if(tareaEquipo.getEquipo().getId() == equipo.getId())
+                {
+                    iterator.remove();
+                }
+            }
+
         } else{
             throw new EquipoServiceException("No se puede realizar la acción. Estás bloqueado en este equipo");
         }
