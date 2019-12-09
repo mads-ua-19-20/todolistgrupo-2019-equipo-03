@@ -1,9 +1,6 @@
 package madstodolist;
 
-import madstodolist.model.Equipo;
-import madstodolist.model.EquipoRepository;
-import madstodolist.model.TareaEquipo;
-import madstodolist.model.TareaEquipoRepository;
+import madstodolist.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +23,18 @@ public class TareaEquipoTest {
     @Autowired
     TareaEquipoRepository tareaEquipoRepository;
 
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
     @Test
     public void crearTareaEquipo() throws Exception {
         // GIVEN
         Equipo equipo = new Equipo("Proyecto Zinc");
+        Usuario usuario = new Usuario("alex@ua.es");
 
         // WHEN
 
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
 
         // THEN
 
@@ -41,6 +42,7 @@ public class TareaEquipoTest {
         assertThat(tareaEquipo.getEquipo()).isEqualTo(equipo);
         assertThat(tareaEquipo.getEstado()).isEqualTo(1);
         assertThat(tareaEquipo.isArchivada()).isEqualTo(false);
+        assertThat(tareaEquipo.getUsuario()).isEqualTo(usuario);
     }
 
     @Test
@@ -48,10 +50,9 @@ public class TareaEquipoTest {
         // GIVEN
         Equipo equipo = new Equipo("Proyecto Zinc");
 
-        TareaEquipo tareaEquipo1 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta");
-        TareaEquipo tareaEquipo2 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta");
-        TareaEquipo tareaEquipo3 = new TareaEquipo(equipo, "Engrasar cadena bicicleta");
-
+        TareaEquipo tareaEquipo1 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
+        TareaEquipo tareaEquipo2 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
+        TareaEquipo tareaEquipo3 = new TareaEquipo(equipo, "Engrasar cadena bicicleta", null);
 
         // THEN
 
@@ -66,7 +67,8 @@ public class TareaEquipoTest {
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         Equipo equipo = equipoRepository.findById(1L).orElse(null);
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta");
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
 
         // WHEN
 
@@ -77,6 +79,7 @@ public class TareaEquipoTest {
         assertThat(tareaEquipo.getId()).isNotNull();
         assertThat(tareaEquipo.getEquipo()).isEqualTo(equipo);
         assertThat(tareaEquipo.getTitulo()).isEqualTo("Cambiar ruedas bicicleta");
+        assertThat(tareaEquipo.getUsuario()).isEqualTo(usuario);
     }
 
     @Test(expected = Exception.class)
@@ -86,7 +89,7 @@ public class TareaEquipoTest {
         // Creamos un usuario sin ID y, por tanto, sin estar en gestionado
         // por JPA
         Equipo equipo = new Equipo("Proyecto Zinc");
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
 
         // WHEN
 
@@ -123,7 +126,7 @@ public class TareaEquipoTest {
         // WHEN
 
         Set<TareaEquipo> tareasEquipo = equipo.getTareasEquipo();
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
         tareaEquipoRepository.save(tareaEquipo);
 
         // THEN
@@ -131,5 +134,51 @@ public class TareaEquipoTest {
         assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
         assertThat(tareasEquipo).isEqualTo(equipo.getTareasEquipo());
         assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
+    }
+
+    @Test
+    @Transactional
+    public void unaTareaEquipoNuevaSeAñadeUnUsuarioNull() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Equipo equipo = equipoRepository.findById(1L).orElse(null);
+        Usuario usuario = null;
+
+        // WHEN
+
+        Set<TareaEquipo> tareasEquipo = equipo.getTareasEquipo();
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
+        tareaEquipoRepository.save(tareaEquipo);
+
+        // THEN
+
+        assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
+        assertThat(tareasEquipo).isEqualTo(equipo.getTareasEquipo());
+        assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
+        assertThat(tareaEquipo.getUsuario()).isNull();
+    }
+
+    @Test
+    @Transactional
+    public void unaTareaEquipoNuevaSeAñadeUnUsuario() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Equipo equipo = equipoRepository.findById(1L).orElse(null);
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+
+        // WHEN
+
+        Set<TareaEquipo> tareasEquipo = equipo.getTareasEquipo();
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
+        tareaEquipoRepository.save(tareaEquipo);
+
+        // THEN
+
+        assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
+        assertThat(tareasEquipo).isEqualTo(equipo.getTareasEquipo());
+        assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
+        assertThat(tareaEquipo.getUsuario()).isEqualTo(usuario);
     }
 }
