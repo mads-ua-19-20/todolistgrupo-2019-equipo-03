@@ -65,6 +65,47 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <h2 th:text="'Listado de tareas de equipos'"></h2>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Tarea</th>
+                    <th>Estado</th>
+                    <th>Equipo</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tareaEquipo: ${tareasequipo}">
+                    <div th:if="${tareaEquipo.archivada == false}">
+                        <td th:text="${tareaEquipo.getId()}"></td>
+                        <td th:text="${tareaEquipo.getTitulo()}"></td>
+                        <div th:switch="${tareaEquipo.getEstado()}">
+                            <td th:case="1" th:text="'Pendiente'"></td>
+                            <td th:case="2" th:text="'En progreso'"></td>
+                            <td th:case="3" th:text="'Terminada'"></td>
+                            <td th:case="*" th:text="'Sin estado'"></td>
+                        </div>
+                        <td th:text="${tareaEquipo.getEquipo().getNombre()}"></td>
+
+                        <td>
+                           botones aqui
+                        </td>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
