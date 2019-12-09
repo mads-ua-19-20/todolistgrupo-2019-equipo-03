@@ -48,6 +48,11 @@ public class TareaEquipoService {
         if (tareaEquipo == null) {
             throw new TareaServiceException("No existe tarea de equipo con id " + idTareaEquipo);
         }
+        Usuario usuario = tareaEquipo.getUsuario();
+        if(usuario != null) {
+            usuario.getTareasEquipoAsignadas().remove(tareaEquipo);
+            usuarioRepository.save(usuario);
+        }
         tareaEquipoRepository.delete(tareaEquipo);
     }
 

@@ -2,9 +2,11 @@ package madstodolist;
 
 import madstodolist.model.Equipo;
 import madstodolist.model.TareaEquipo;
+import madstodolist.model.Usuario;
 import madstodolist.service.EquipoService;
 import madstodolist.service.EquipoServiceException;
 import madstodolist.service.TareaEquipoService;
+import madstodolist.service.UsuarioService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +29,24 @@ public class TareaEquipoServiceTest {
     @Autowired
     TareaEquipoService tareaEquipoService;
 
+    @Autowired
+    UsuarioService usuarioService;
 
     @Test
     public void testNuevaTareaEquipo() {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
+        Usuario usuario = usuarioService.findById(1L);
+
         // WHEN
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta");
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", usuario);
 
         // THEN
 
         Equipo equipo = equipoService.findById(1L);
         assertThat(equipo.getTareasEquipo()).contains(tareaEquipo);
+        assertThat(tareaEquipo.getUsuario()).isEqualTo(usuario);
     }
 
     @Test
@@ -50,7 +57,7 @@ public class TareaEquipoServiceTest {
         Equipo equipo = new Equipo("Proyecto Zinc");
         equipo.setId(1L);
 
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén", null);
         tareaEquipo.setId(1L);
 
         // WHEN
@@ -84,13 +91,14 @@ public class TareaEquipoServiceTest {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta");
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", null);
+        Usuario usuario = usuarioService.findById(1L);
         Long idNuevaTareaEquipo = tareaEquipo.getId();
         int estadoInicial = tareaEquipo.getEstado();
 
         // WHEN
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Engrasar cadena", 1);
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Engrasar cadena", 1, usuario);
         TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTareaEquipo);
 
         // THEN
@@ -98,18 +106,19 @@ public class TareaEquipoServiceTest {
         assertThat(tareaEquipoModificada.getTitulo()).isEqualTo("Engrasar cadena");
         assertThat(tareaEquipoBD.getTitulo()).isEqualTo("Engrasar cadena");
         assertThat(tareaEquipoBD.getEstado()).isEqualTo(estadoInicial);
+        assertThat(tareaEquipoBD.getUsuario()).isEqualTo(usuario);
     }
 
     @Test
     @Transactional
     public void testModificarTareaEquipoEstado() {
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Alquilar casa");
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Alquilar casa", null);
         Long idNuevaTarea = tareaEquipo.getId();
         int estadoInicial = tareaEquipo.getEstado();
 
         // WHEN
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTarea, "Pagar casa", 2);
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTarea, "Pagar casa", 2, null);
         TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTarea);
 
         // THEN
@@ -121,10 +130,31 @@ public class TareaEquipoServiceTest {
     }
 
     @Test
+    @Transactional
+    public void testModificarTareaEquipoUsuario() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", null);
+        Usuario usuario = usuarioService.findById(1L);
+        Long idNuevaTareaEquipo = tareaEquipo.getId();
+
+        // WHEN
+        //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Cambiar ruedas bicicleta", 1, usuario);
+        TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTareaEquipo);
+
+        // THEN
+        assertThat(tareaEquipoModificada.getUsuario()).isEqualTo(usuario);
+        assertThat(tareaEquipoBD.getUsuario()).isEqualTo(usuario);
+    }
+
+    @Test
+    @Transactional
     public void testBorrarTareaEquipo() {
         // GIVEN
 
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta");
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta", null);
 
         // WHEN
 
@@ -133,6 +163,25 @@ public class TareaEquipoServiceTest {
         // THEN
 
         assertThat(tareaEquipoService.findById(tareaEquipo.getId())).isNull();
+
+    }
+
+    @Test
+    @Transactional
+    public void testBorrarTareaEquipoConUsuario() {
+        // GIVEN
+        Usuario usuario = usuarioService.findById(1L);
+
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta", usuario);
+
+        // WHEN
+
+        tareaEquipoService.borraTareaEquipo(tareaEquipo.getId());
+
+        // THEN
+
+        assertThat(tareaEquipoService.findById(tareaEquipo.getId())).isNull();
+        assertThat(usuario.getTareasEquipoAsignadas()).doesNotContain(tareaEquipo);
 
     }
 
