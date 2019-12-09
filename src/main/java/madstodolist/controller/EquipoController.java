@@ -313,6 +313,7 @@ public class EquipoController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("idEquipo", idEquipo);
         tareaEquipoData.setTitulo(tareaEquipo.getTitulo());
+        tareaEquipoData.setAsignacion(tareaEquipo.getUsuario());
         return "formEditarTareaEquipo";
     }
 
@@ -328,7 +329,7 @@ public class EquipoController {
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
         tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
-        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado());
+        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado(), tareaEquipoData.getAsignacion());
         flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
