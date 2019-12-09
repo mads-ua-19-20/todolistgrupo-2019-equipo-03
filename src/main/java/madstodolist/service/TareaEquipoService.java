@@ -31,7 +31,7 @@ public class TareaEquipoService {
         if (equipo == null) {
             throw new TareaServiceException("Usuario " + idEquipo + " no existe al crear tarea " + tituloTarea);
         }
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea, null);
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
     }
