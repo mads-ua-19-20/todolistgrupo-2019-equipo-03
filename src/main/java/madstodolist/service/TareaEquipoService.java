@@ -26,12 +26,13 @@ public class TareaEquipoService {
     }
 
     @Transactional
-    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea) {
+    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea, Usuario usuario) {
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
         if (equipo == null) {
             throw new TareaServiceException("Usuario " + idEquipo + " no existe al crear tarea " + tituloTarea);
         }
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea, null);
+
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea, usuario);
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
     }

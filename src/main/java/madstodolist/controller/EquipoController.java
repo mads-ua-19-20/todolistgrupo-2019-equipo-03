@@ -268,7 +268,7 @@ public class EquipoController {
             throw new UsuarioNotFoundException();
         }
 
-        tareaEquipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo());
+        tareaEquipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getAsignacion());
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }

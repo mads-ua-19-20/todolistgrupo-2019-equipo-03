@@ -43,7 +43,9 @@ public class TareaEquipo {
         this.archivada = false;
         equipo.getTareasEquipo().add(this);
         this.usuario = usuario;
-        usuario.getTareasEquipoAsignadas().add(this);
+        if(usuario != null) {
+            usuario.getTareasEquipoAsignadas().add(this);
+        }
     }
 
     public Long getId() {
