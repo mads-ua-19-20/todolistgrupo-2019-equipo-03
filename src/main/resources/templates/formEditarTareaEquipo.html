@@ -27,6 +27,16 @@
                         <option th:value=3 th:text="'Terminada'"></option>
                     </select>
                 </div>
+                <br>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="asignacion">Asignación</label>
+                    </div>
+                    <select class="custom-select" id="asignacion" th:field="*{asignacion}">
+                        <option th:value="null" th:text="'Sin asignar'"></option>
+                        <option th:each="usu: ${tareaEquipo.getEquipo().getUsuarios()}" th:value="${usu.getId()}" th:text="${usu.getNombre()}"></option>
+                    </select>
+                </div>
             </div>
             <button class="btn btn-primary" type="submit">Modificar tarea</button>
             <a class="btn btn-link" th:href="@{/equipos/{id}/usuarios(id=${idEquipo})}">Cancelar</a>

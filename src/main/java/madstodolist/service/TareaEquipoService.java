@@ -26,12 +26,18 @@ public class TareaEquipoService {
     }
 
     @Transactional
-    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea) {
+    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea, Usuario usuario) {
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
         if (equipo == null) {
             throw new TareaServiceException("Usuario " + idEquipo + " no existe al crear tarea " + tituloTarea);
         }
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea);
+
+        if(usuario != null) {
+            if (!equipo.getUsuarios().contains(usuario)) {
+                throw new TareaServiceException("El usuario no está en el equipo");
+            }
+        }
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea, usuario);
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
     }
@@ -42,11 +48,16 @@ public class TareaEquipoService {
         if (tareaEquipo == null) {
             throw new TareaServiceException("No existe tarea de equipo con id " + idTareaEquipo);
         }
+        Usuario usuario = tareaEquipo.getUsuario();
+        if(usuario != null) {
+            usuario.getTareasEquipoAsignadas().remove(tareaEquipo);
+            usuarioRepository.save(usuario);
+        }
         tareaEquipoRepository.delete(tareaEquipo);
     }
 
     @Transactional
-    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo, int nuevoEstado) {
+    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo, int nuevoEstado, Usuario usuario) {
         TareaEquipo tareaEquipo = tareaEquipoRepository.findById(idTareaEquipo).orElse(null);
         if (tareaEquipo == null) {
             throw new TareaServiceException("No existe tarea de equipo con id " + idTareaEquipo);
@@ -54,6 +65,18 @@ public class TareaEquipoService {
         tareaEquipo.setTitulo(nuevoTitulo);
         if(nuevoEstado == 1 || nuevoEstado == 2 || nuevoEstado == 3){
             tareaEquipo.setEstado(nuevoEstado);
+        }
+
+        if(usuario == null)
+        {
+            tareaEquipo.setUsuario(usuario);
+        }
+        else if(tareaEquipo.getEquipo().getUsuarios().contains(usuario)) {
+            tareaEquipo.setUsuario(usuario);
+        }
+        else
+        {
+            throw new TareaServiceException("El usuario no está en el equipo, idUsuario: " + usuario.getId());
         }
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;

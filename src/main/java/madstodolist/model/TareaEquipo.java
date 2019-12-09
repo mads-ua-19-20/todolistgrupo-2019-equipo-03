@@ -27,17 +27,25 @@ public class TareaEquipo {
     @JoinColumn(name = "equipo_id")
     private Equipo equipo;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     private TareaEquipo() {}
 
     // Al crear una tarea la asociamos automáticamente a un
     // equipo. Actualizamos por tanto la lista de tareas del
     // equipo.
-    public TareaEquipo(Equipo equipo, String titulo) {
+    public TareaEquipo(Equipo equipo, String titulo, Usuario usuario) {
         this.equipo = equipo;
         this.titulo = titulo;
         this.estado = 1;
         this.archivada = false;
         equipo.getTareasEquipo().add(this);
+        this.usuario = usuario;
+        if(usuario != null) {
+            usuario.getTareasEquipoAsignadas().add(this);
+        }
     }
 
     public Long getId() {
@@ -79,6 +87,10 @@ public class TareaEquipo {
     public void setArchivada(boolean archivada) {
         this.archivada = archivada;
     }
+
+    public Usuario getUsuario() { return usuario; }
+
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
     @Override
     public boolean equals(Object o) {

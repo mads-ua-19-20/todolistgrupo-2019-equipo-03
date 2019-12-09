@@ -61,7 +61,8 @@ public class TareaEquipoWebTest {
 
         this.mockMvc.perform(get("/equipos/1/usuarios/tareanueva"))
                 .andDo(print())
-                .andExpect(content().string(containsString("action=\"/equipos/1/usuarios/tareanueva\"")));
+                .andExpect(content().string(containsString("action=\"/equipos/1/usuarios/tareanueva\"")))
+                .andExpect(content().string(containsString("Asignaci")));
     }
 
 
@@ -77,7 +78,7 @@ public class TareaEquipoWebTest {
 
     @Test
     public void editarTareaEquipoDevuelveForm() throws Exception {
-        TareaEquipo tareaEquipo = new TareaEquipo(new Equipo("Proyecto Cobalto"), "Limpieza almacén");
+        TareaEquipo tareaEquipo = new TareaEquipo(new Equipo("Proyecto Cobalto"), "Limpieza almacén", null);
         tareaEquipo.setId(1L);
         tareaEquipo.getEquipo().setId(1L);
 
@@ -96,7 +97,8 @@ public class TareaEquipoWebTest {
                         containsString("Limpieza"),
                         // Contiene enlace a listar tareas del usuario si se cancela la edición
                         containsString("href=\"/equipos/1/usuarios\""),
-                        containsString("Estado"))));
+                        containsString("Estado"),
+                        containsString("Asignaci"))));
     }
 
     @Test
@@ -107,7 +109,7 @@ public class TareaEquipoWebTest {
         Equipo equipo = new Equipo("Proyecto Cobalto");
         equipo.setId(1L);
 
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén", usuario);
         tareaEquipo.setId(1L);
 
         List<TareaEquipo> tareasEquipo = new ArrayList<>();
