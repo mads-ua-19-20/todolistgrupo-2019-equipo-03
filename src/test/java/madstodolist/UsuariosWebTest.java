@@ -70,7 +70,8 @@ public class UsuariosWebTest {
                 .andExpect(content().string(containsString("ID: 1")))
                 .andExpect(content().string(containsString("Nombre: Domingo Gallardo")))
                 .andExpect(content().string(containsString("E-mail: domingo@ua")))
-                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))));
+                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))))
+                .andExpect(content().string(containsString("Editar")));
     }
 
     @Test
@@ -89,7 +90,8 @@ public class UsuariosWebTest {
                 .andExpect(content().string(containsString("Descripción de Domingo Gallardo")))
                 .andExpect(content().string(containsString("Nombre: Domingo Gallardo")))
                 .andExpect(content().string(containsString("E-mail: domingo@ua")))
-                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))));
+                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))))
+                .andExpect(content().string(containsString("Editar")));
     }
 
     @Test
