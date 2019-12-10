@@ -85,6 +85,7 @@ public class UsuariosController {
 
             model.addAttribute("nombreUsuario", usuarioLog.getNombre());
             model.addAttribute("idUsuario", usuarioLog.getId());
+            model.addAttribute("usuarioLog",usuarioLog);
             model.addAttribute("usuario", usuarioDescrip);
         }
         else if(idLog == null){
