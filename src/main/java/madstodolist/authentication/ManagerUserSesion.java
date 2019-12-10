@@ -33,4 +33,10 @@ public class ManagerUserSesion {
             throw new UsuarioNoLogeadoException();
         }
     }
+
+    public void comprobarUsuarioAdminOLogeado(Usuario usuario, Long idUsuario) {
+        if(!usuario.getAdminCheck() && !idUsuario.equals(usuario.getId())){
+            throw  new NoAdminAccessException();
+        }
+    }
 }

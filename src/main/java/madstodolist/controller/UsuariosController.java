@@ -51,6 +51,8 @@ public class UsuariosController {
 
         Long id = (Long) session.getAttribute("idUsuarioLogeado");
 
+        managerUserSesion.comprobarIdLogNotNull(id);
+
         Usuario usuario = usuarioService.findById(id);
 
         if(usuario !=  null){
@@ -72,10 +74,12 @@ public class UsuariosController {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
 
+        managerUserSesion.comprobarIdLogNotNull(idLog);
+
         Usuario usuarioLog = usuarioService.findById(idLog);
 
         if(usuarioLog !=  null){
-            managerUserSesion.comprobarUsuarioAdmin(usuarioLog);
+            managerUserSesion.comprobarUsuarioAdminOLogeado(usuarioLog, idDescrip);
 
             Usuario usuarioDescrip = usuarioService.findById(idDescrip);
 
