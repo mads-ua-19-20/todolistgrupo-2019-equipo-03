@@ -78,7 +78,7 @@ public class TareaEquipoWebTest {
 
     @Test
     public void editarTareaEquipoDevuelveForm() throws Exception {
-        TareaEquipo tareaEquipo = new TareaEquipo(new Equipo("Proyecto Cobalto"), "Limpieza almacén", null);
+        TareaEquipo tareaEquipo = new TareaEquipo(new Equipo("Proyecto Cobalto"), "Limpieza almacén", null, null);
         tareaEquipo.setId(1L);
         tareaEquipo.getEquipo().setId(1L);
 
@@ -98,6 +98,7 @@ public class TareaEquipoWebTest {
                         // Contiene enlace a listar tareas del usuario si se cancela la edición
                         containsString("href=\"/equipos/1/usuarios\""),
                         containsString("Estado"),
+                        containsString("Fecha límite"),
                         containsString("Asignaci"))));
     }
 
@@ -109,7 +110,7 @@ public class TareaEquipoWebTest {
         Equipo equipo = new Equipo("Proyecto Cobalto");
         equipo.setId(1L);
 
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén", usuario);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén", usuario, null);
         tareaEquipo.setId(1L);
 
         List<TareaEquipo> tareasEquipo = new ArrayList<>();

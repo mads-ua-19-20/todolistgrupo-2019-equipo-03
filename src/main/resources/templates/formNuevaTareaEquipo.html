@@ -15,13 +15,14 @@
                 <label for="titulo">Título de la tarea:</label>
                 <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/>
                 <br>
+                <div class="form-group">
+                    <label for="fechalimite">Fecha límite de la tarea:</label>
+                    <input class="form-control" id="fechalimite" name="fechalimite" placeholder="01-12-2019" th:field="*{fechalimite}" type="datetime-local"/>
+                </div>
+                <br>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="asignacion">Asignación</label>
-                    </div>
-                    <div class="form-group">
-                        <label for="fechalimite">Fecha límite de la tarea:</label>
-                        <input class="form-control" id="fechalimite" name="fechalimite" placeholder="01-12-2019" th:field="*{fechalimite}" type="datetime-local"/>
                     </div>
                     <select class="custom-select" id="asignacion" th:field="*{asignacion}">
                         <option th:value="null" th:text="'Sin asignar'"></option>
