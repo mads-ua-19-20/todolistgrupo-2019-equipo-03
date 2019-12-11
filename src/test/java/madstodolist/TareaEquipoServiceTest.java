@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +42,7 @@ public class TareaEquipoServiceTest {
         Usuario usuario = usuarioService.findById(1L);
 
         // WHEN
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", usuario);
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", usuario, null);
 
         // THEN
 
@@ -57,7 +59,7 @@ public class TareaEquipoServiceTest {
         Equipo equipo = new Equipo("Proyecto Zinc");
         equipo.setId(1L);
 
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén", null);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Limpieza almacén", null, null);
         tareaEquipo.setId(1L);
 
         // WHEN
@@ -87,18 +89,20 @@ public class TareaEquipoServiceTest {
 
     @Test
     @Transactional
-    public void testModificarTareaEquipo() {
+    public void testModificarTareaEquipo() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", null);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", null, sdf.parse("2019-09-10"));
         Usuario usuario = usuarioService.findById(1L);
         Long idNuevaTareaEquipo = tareaEquipo.getId();
         int estadoInicial = tareaEquipo.getEstado();
 
         // WHEN
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Engrasar cadena", 1, usuario);
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Engrasar cadena", 1, usuario, sdf.parse("2019-09-25"));
         TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTareaEquipo);
 
         // THEN
@@ -107,18 +111,19 @@ public class TareaEquipoServiceTest {
         assertThat(tareaEquipoBD.getTitulo()).isEqualTo("Engrasar cadena");
         assertThat(tareaEquipoBD.getEstado()).isEqualTo(estadoInicial);
         assertThat(tareaEquipoBD.getUsuario()).isEqualTo(usuario);
+        assertThat(tareaEquipoBD.getFechalimite()).isEqualTo((sdf.parse("2019-09-25")));
     }
 
     @Test
     @Transactional
     public void testModificarTareaEquipoEstado() {
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Alquilar casa", null);
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Alquilar casa", null, null);
         Long idNuevaTarea = tareaEquipo.getId();
         int estadoInicial = tareaEquipo.getEstado();
 
         // WHEN
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTarea, "Pagar casa", 2, null);
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTarea, "Pagar casa", 2, null, null);
         TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTarea);
 
         // THEN
@@ -135,13 +140,13 @@ public class TareaEquipoServiceTest {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", null);
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar ruedas bicicleta", null, null);
         Usuario usuario = usuarioService.findById(1L);
         Long idNuevaTareaEquipo = tareaEquipo.getId();
 
         // WHEN
         //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
-        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Cambiar ruedas bicicleta", 1, usuario);
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTareaEquipo, "Cambiar ruedas bicicleta", 1, usuario, null);
         TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTareaEquipo);
 
         // THEN
@@ -154,7 +159,7 @@ public class TareaEquipoServiceTest {
     public void testBorrarTareaEquipo() {
         // GIVEN
 
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta", null);
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta", null, null);
 
         // WHEN
 
@@ -172,7 +177,7 @@ public class TareaEquipoServiceTest {
         // GIVEN
         Usuario usuario = usuarioService.findById(1L);
 
-        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta", usuario);
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Cambiar rueda bicicleta", usuario, null);
 
         // WHEN
 
@@ -214,5 +219,26 @@ public class TareaEquipoServiceTest {
             tareaEquipoService.usuarioPerteneceEquipo(2L, 1L);
         }).isInstanceOf(EquipoServiceException.class);
 
+    }
+
+    @Test
+    @Transactional
+    public void testModificarTareaFechaLimite() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        TareaEquipo tareaEquipo = tareaEquipoService.nuevaTareaEquipo(1L, "Pagar el recibo", null, sdf.parse("2019-09-10"));
+        Long idNuevaTarea = tareaEquipo.getId();
+        Date fechaInicial = tareaEquipo.getFechalimite();
+
+        // WHEN
+        TareaEquipo tareaEquipoModificada = tareaEquipoService.modificaTareaEquipo(idNuevaTarea, "Pagar la matrícula", 2, null, sdf.parse("2019-09-25"));
+        TareaEquipo tareaEquipoBD = tareaEquipoService.findById(idNuevaTarea);
+        Date fechaLimite2 = tareaEquipo.getFechalimite();
+
+        // THEN
+
+        assertThat(tareaEquipoModificada.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaEquipoBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaEquipoBD.getFechalimite()).isNotEqualTo(fechaInicial);
+        assertThat(tareaEquipoBD.getFechalimite()).isEqualTo(fechaLimite2);
     }
 }

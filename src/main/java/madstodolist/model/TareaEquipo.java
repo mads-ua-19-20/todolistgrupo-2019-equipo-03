@@ -2,6 +2,7 @@ package madstodolist.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +19,9 @@ public class TareaEquipo {
     private int estado;
 
     private boolean archivada;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechalimite;
 
     @NotNull
     // Relación muchos-a-uno entre tareas y equipo
@@ -36,7 +40,7 @@ public class TareaEquipo {
     // Al crear una tarea la asociamos automáticamente a un
     // equipo. Actualizamos por tanto la lista de tareas del
     // equipo.
-    public TareaEquipo(Equipo equipo, String titulo, Usuario usuario) {
+    public TareaEquipo(Equipo equipo, String titulo, Usuario usuario, Date fechalimite) {
         this.equipo = equipo;
         this.titulo = titulo;
         this.estado = 1;
@@ -46,6 +50,7 @@ public class TareaEquipo {
         if(usuario != null) {
             usuario.getTareasEquipoAsignadas().add(this);
         }
+        this.fechalimite = fechalimite;
     }
 
     public Long getId() {
@@ -91,6 +96,14 @@ public class TareaEquipo {
     public Usuario getUsuario() { return usuario; }
 
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
+    public Date getFechalimite() {
+        return fechalimite;
+    }
+
+    public void setFechalimite(Date fechalimite) {
+        this.fechalimite = fechalimite;
+    }
 
     @Override
     public boolean equals(Object o) {

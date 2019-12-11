@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,8 +34,8 @@ public class TareaEquipoTest {
         Usuario usuario = new Usuario("alex@ua.es");
 
         // WHEN
-
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario, sdf.parse("2019-09-10"));
 
         // THEN
 
@@ -43,16 +44,18 @@ public class TareaEquipoTest {
         assertThat(tareaEquipo.getEstado()).isEqualTo(1);
         assertThat(tareaEquipo.isArchivada()).isEqualTo(false);
         assertThat(tareaEquipo.getUsuario()).isEqualTo(usuario);
+        assertThat(tareaEquipo.getFechalimite()).isEqualTo(sdf.parse("2019-09-10"));
     }
 
     @Test
-    public void comprobarIgualdadSinId() {
+    public void comprobarIgualdadSinId() throws Exception {
         // GIVEN
         Equipo equipo = new Equipo("Proyecto Zinc");
 
-        TareaEquipo tareaEquipo1 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
-        TareaEquipo tareaEquipo2 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
-        TareaEquipo tareaEquipo3 = new TareaEquipo(equipo, "Engrasar cadena bicicleta", null);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        TareaEquipo tareaEquipo1 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null, sdf.parse("2019-09-10"));
+        TareaEquipo tareaEquipo2 = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null, sdf.parse("2019-09-10"));
+        TareaEquipo tareaEquipo3 = new TareaEquipo(equipo, "Engrasar cadena bicicleta", null, sdf.parse("2019-09-10"));
 
         // THEN
 
@@ -62,13 +65,14 @@ public class TareaEquipoTest {
 
     @Test
     @Transactional
-    public void crearTareaEquipoEnBaseDatos() {
+    public void crearTareaEquipoEnBaseDatos() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         Equipo equipo = equipoRepository.findById(1L).orElse(null);
         Usuario usuario = usuarioRepository.findById(1L).orElse(null);
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario, sdf.parse("2019-09-10"));
 
         // WHEN
 
@@ -80,6 +84,7 @@ public class TareaEquipoTest {
         assertThat(tareaEquipo.getEquipo()).isEqualTo(equipo);
         assertThat(tareaEquipo.getTitulo()).isEqualTo("Cambiar ruedas bicicleta");
         assertThat(tareaEquipo.getUsuario()).isEqualTo(usuario);
+        assertThat(tareaEquipo.getFechalimite()).isEqualTo(sdf.parse("2019-09-10"));
     }
 
     @Test(expected = Exception.class)
@@ -89,7 +94,7 @@ public class TareaEquipoTest {
         // Creamos un usuario sin ID y, por tanto, sin estar en gestionado
         // por JPA
         Equipo equipo = new Equipo("Proyecto Zinc");
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null, null);
 
         // WHEN
 
@@ -126,7 +131,7 @@ public class TareaEquipoTest {
         // WHEN
 
         Set<TareaEquipo> tareasEquipo = equipo.getTareasEquipo();
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", null, null);
         tareaEquipoRepository.save(tareaEquipo);
 
         // THEN
@@ -148,7 +153,7 @@ public class TareaEquipoTest {
         // WHEN
 
         Set<TareaEquipo> tareasEquipo = equipo.getTareasEquipo();
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario, null);
         tareaEquipoRepository.save(tareaEquipo);
 
         // THEN
@@ -171,7 +176,7 @@ public class TareaEquipoTest {
         // WHEN
 
         Set<TareaEquipo> tareasEquipo = equipo.getTareasEquipo();
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, "Cambiar ruedas bicicleta", usuario, null);
         tareaEquipoRepository.save(tareaEquipo);
 
         // THEN
