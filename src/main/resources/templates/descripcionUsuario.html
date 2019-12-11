@@ -6,23 +6,32 @@
 <body>
 
 <div th:replace="fragments::barra-menu (nombreUsuario=${nombreUsuario}, id=${idUsuario})"/>
-
-<div class="row mt-3">
-    <div class="col">
-        <h4 th:text="'Descripción de ' + ${usuario.nombre}"/>
+<div class="container-fluid">
+    <div class="row mt-3 justify-content-center">
+        <div class="col-6">
+            <h4 class="text-center" th:text="'Descripción de ' + ${usuario.nombre}"/>
+        </div>
     </div>
-</div>
 
-<div class="row mt-3">
-    <div class="col">
-        <ul>
-            <li th:text="'ID: ' + ${usuario.id}"/>
-            <li th:text="'Nombre: ' + ${usuario.nombre}"/>
-            <li th:text="'E-mail: ' + ${usuario.email}"/>
-            <li th:text="'Fecha nacimiento: ' + ${usuario.fechaNacimiento}"/>
-            <li th:text="'Admin: ' + ${usuario.adminCheck} " />
-            <li th:text="'Acceso bloqueado: ' + ${usuario.bloqueado}"/>
-        </ul>
+    <div class="row mt-3 justify-content-center">
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header">Detalles</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:if="${usuarioLog.adminCheck}" th:text="'ID: ' + ${usuario.id}"/>
+                    <li class="list-group-item" th:text="'Nombre: ' + ${usuario.nombre}"/>
+                    <li class="list-group-item" th:text="'E-mail: ' + ${usuario.email}"/>
+                    <li class="list-group-item" th:text="'Fecha nacimiento: ' + ${usuario.fechaNacimiento}"/>
+                    <li class="list-group-item" th:if="${usuarioLog.adminCheck}" th:text="'Admin: ' + ${usuario.adminCheck} " />
+                    <li class="list-group-item" th:if="${usuarioLog.adminCheck}" th:text="'Acceso bloqueado: ' + ${usuario.bloqueado}"/>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 justify-content-center">
+        <div class="col-3">
+            <div class="text-center"><a class="btn btn-primary" th:href="@{/usuarios/{id}/editar(id=${usuario.id})}">Editar</a></div>
+        </div>
     </div>
 </div>
 

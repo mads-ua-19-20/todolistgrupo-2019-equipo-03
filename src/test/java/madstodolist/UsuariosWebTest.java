@@ -57,6 +57,7 @@ public class UsuariosWebTest {
         Usuario usuario = new Usuario("domingo@ua.es");
         usuario.setId(1L);
         usuario.setNombre("Domingo Gallardo");
+        usuario.setAdminCheck(true);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         usuario.setFechaNacimiento(sdf.parse("2001-02-10"));
 
@@ -69,7 +70,28 @@ public class UsuariosWebTest {
                 .andExpect(content().string(containsString("ID: 1")))
                 .andExpect(content().string(containsString("Nombre: Domingo Gallardo")))
                 .andExpect(content().string(containsString("E-mail: domingo@ua")))
-                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))));
+                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))))
+                .andExpect(content().string(containsString("Editar")));
+    }
+
+    @Test
+    public void getDescripcionDevuelveDatosNoAdmin() throws Exception {
+        Usuario usuario = new Usuario("domingo@ua.es");
+        usuario.setId(1L);
+        usuario.setNombre("Domingo Gallardo");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        usuario.setFechaNacimiento(sdf.parse("2001-02-10"));
+
+        when(usuarioService.findById(null)).thenReturn(usuario);
+        when(usuarioService.findById(1L)).thenReturn(usuario);
+
+        this.mockMvc.perform(get("/usuarios/1"))
+                .andDo(print())
+                .andExpect(content().string(containsString("Descripción de Domingo Gallardo")))
+                .andExpect(content().string(containsString("Nombre: Domingo Gallardo")))
+                .andExpect(content().string(containsString("E-mail: domingo@ua")))
+                .andExpect(content().string(containsString("Fecha nacimiento: " + sdf.parse("2001-02-10"))))
+                .andExpect(content().string(containsString("Editar")));
     }
 
     @Test
