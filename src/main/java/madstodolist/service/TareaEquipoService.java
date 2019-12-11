@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @Service
 public class TareaEquipoService {
     private UsuarioRepository usuarioRepository;
@@ -26,7 +28,7 @@ public class TareaEquipoService {
     }
 
     @Transactional
-    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea, Usuario usuario) {
+    public TareaEquipo nuevaTareaEquipo(Long idEquipo, String tituloTarea, Usuario usuario, Date fechalimite) {
         Equipo equipo = equipoRepository.findById(idEquipo).orElse(null);
         if (equipo == null) {
             throw new TareaServiceException("Usuario " + idEquipo + " no existe al crear tarea " + tituloTarea);
@@ -37,7 +39,7 @@ public class TareaEquipoService {
                 throw new TareaServiceException("El usuario no está en el equipo");
             }
         }
-        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea, usuario);
+        TareaEquipo tareaEquipo = new TareaEquipo(equipo, tituloTarea, usuario, fechalimite);
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
     }
@@ -57,7 +59,7 @@ public class TareaEquipoService {
     }
 
     @Transactional
-    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo, int nuevoEstado, Usuario usuario) {
+    public TareaEquipo modificaTareaEquipo(Long idTareaEquipo, String nuevoTitulo, int nuevoEstado, Usuario usuario, Date fechalimite) {
         TareaEquipo tareaEquipo = tareaEquipoRepository.findById(idTareaEquipo).orElse(null);
         if (tareaEquipo == null) {
             throw new TareaServiceException("No existe tarea de equipo con id " + idTareaEquipo);
@@ -78,6 +80,7 @@ public class TareaEquipoService {
         {
             throw new TareaServiceException("El usuario no está en el equipo, idUsuario: " + usuario.getId());
         }
+        tareaEquipo.setFechalimite(fechalimite);
         tareaEquipoRepository.save(tareaEquipo);
         return tareaEquipo;
     }
