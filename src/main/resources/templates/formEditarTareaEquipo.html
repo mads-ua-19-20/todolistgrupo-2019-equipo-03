@@ -27,7 +27,10 @@
                         <option th:value=3 th:text="'Terminada'"></option>
                     </select>
                 </div>
-                <br>
+                <div class="form-group">
+                    <label for="fechalimite">Fecha límite de la tarea:</label>
+                    <input class="form-control" id="fechalimite" name="fechalimite" placeholder="01-12-2019" th:field="*{fechalimite}" type="datetime-local"/>
+                </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="asignacion">Asignación</label>
