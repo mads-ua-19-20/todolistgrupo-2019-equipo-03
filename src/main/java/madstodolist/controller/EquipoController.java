@@ -14,10 +14,14 @@ import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -76,6 +80,10 @@ public class EquipoController {
             boolean apuntado = usuariosEquipo.contains(usuario);
 
             List<TareaEquipo> tareasEquipo = equipoService.tareasEquipo(idEquipo);
+
+            LocalDate date = LocalDate.now();
+            Date fecha = Date.valueOf(date);
+            model.addAttribute("fecha", fecha);
             model.addAttribute("nombreUsuario", usuario.getNombre());
             model.addAttribute("idUsuario", usuario.getId());
             model.addAttribute("usuariosEquipo", usuariosEquipo);
@@ -255,8 +263,8 @@ public class EquipoController {
 
 
     @PostMapping("/equipos/{id}/usuarios/tareanueva")
-    public String nuevaTarea(@PathVariable(value="id") Long idEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
-                             Model model, RedirectAttributes flash,
+    public String nuevaTarea(@PathVariable(value="id") Long idEquipo, @Valid TareaEquipoData tareaEquipoData,
+                             BindingResult result, Model model, RedirectAttributes flash,
                              HttpSession session) {
 
         Long idLog = (Long) session.getAttribute("idUsuarioLogeado");
@@ -268,7 +276,11 @@ public class EquipoController {
             throw new UsuarioNotFoundException();
         }
 
-        tareaEquipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getAsignacion());
+        if (result.hasErrors()) {
+            return "redirect:/equipos/" + idEquipo + "/usuarios/tareanueva";
+        }
+
+        tareaEquipoService.nuevaTareaEquipo(idEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getAsignacion(), tareaEquipoData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }
@@ -314,12 +326,13 @@ public class EquipoController {
         model.addAttribute("idEquipo", idEquipo);
         tareaEquipoData.setTitulo(tareaEquipo.getTitulo());
         tareaEquipoData.setAsignacion(tareaEquipo.getUsuario());
+        tareaEquipoData.setFechalimite(tareaEquipo.getFechalimite());
         return "formEditarTareaEquipo";
     }
 
     @PostMapping("/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar")
-    public String grabaTareaEquipoModificada(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTareaEquipo") Long idTareaEquipo, @ModelAttribute TareaEquipoData tareaEquipoData,
-                                       Model model, RedirectAttributes flash, HttpSession session) {
+    public String grabaTareaEquipoModificada(@PathVariable(value="idEquipo") Long idEquipo, @PathVariable(value="idTareaEquipo") Long idTareaEquipo, @Valid TareaEquipoData tareaEquipoData,
+                                       BindingResult result, Model model, RedirectAttributes flash, HttpSession session) {
         TareaEquipo tareaEquipo = tareaEquipoService.findById(idTareaEquipo);
         if (tareaEquipo == null) {
             throw new TareaEquipoNotFoundException();
@@ -329,7 +342,11 @@ public class EquipoController {
         managerUserSesion.comprobarUsuarioLogeado(session, idLog);
         tareaEquipoService.usuarioPerteneceEquipo(idLog, idEquipo);
 
-        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado(), tareaEquipoData.getAsignacion());
+        if (result.hasErrors()) {
+            return "redirect:/equipos/" + idEquipo + "/usuarios/tareaEquipo/" + idTareaEquipo + "/editar";
+        }
+
+        tareaEquipoService.modificaTareaEquipo(idTareaEquipo, tareaEquipoData.getTitulo(), tareaEquipoData.getEstado(), tareaEquipoData.getAsignacion(),tareaEquipoData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea de equipo modificada correctamente");
         return "redirect:/equipos/" + idEquipo + "/usuarios";
     }

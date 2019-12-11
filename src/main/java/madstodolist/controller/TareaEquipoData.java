@@ -1,10 +1,15 @@
 package madstodolist.controller;
 
 import madstodolist.model.Usuario;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 public class TareaEquipoData {
     private String titulo;
     private int estado;
+    @DateTimeFormat(pattern="dd-MM-yyyy")
+    private Date fechalimite;
 
     private Usuario asignacion;
 
@@ -30,5 +35,13 @@ public class TareaEquipoData {
 
     public void setAsignacion(Usuario asignacion) {
         this.asignacion = asignacion;
+    }
+
+    public Date getFechalimite() {
+        return fechalimite;
+    }
+
+    public void setFechalimite(Date fechalimite) {
+        this.fechalimite = fechalimite;
     }
 }
