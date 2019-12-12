@@ -80,6 +80,7 @@
                     <th>Id</th>
                     <th>Tarea</th>
                     <th>Estado</th>
+                    <th>Fecha Límite</th>
                     <th>Equipo</th>
                 </tr>
                 </thead>
@@ -94,6 +95,7 @@
                             <td th:case="3" th:text="'Terminada'"></td>
                             <td th:case="*" th:text="'Sin estado'"></td>
                         </div>
+                        <td th:class="${tareaEquipo.getFechalimite() > fecha} ? '' : 'text-danger'" th:text="${tareaEquipo.getFechalimite()}"></td>
                         <td>
                             <a class="nav-link" th:href="@{/equipos/{idEquipo}/usuarios(idEquipo=${tareaEquipo.getEquipo().getId()})}" th:text="${tareaEquipo.getEquipo().getNombre()}"></a>
                         </td>
