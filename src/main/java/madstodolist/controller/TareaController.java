@@ -85,6 +85,7 @@ public class TareaController {
         model.addAttribute("fecha", fecha);
         model.addAttribute("usuario", usuario);
         model.addAttribute("tareas", tareas);
+        model.addAttribute("tareasequipo", usuario.getTareasEquipoAsignadas());
         return "listaTareas";
     }
 
