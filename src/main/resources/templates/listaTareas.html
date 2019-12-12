@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments :: head (titulo='Login')">
+<head th:replace="fragments :: head (titulo='Tareas de ' + ${usuario.nombre})">
     <script src="https://kit.fontawesome.com/57d819f1f2.js" crossorigin="anonymous"></script>
 </head>
 
@@ -68,7 +68,7 @@
 
     <div class="row mt-3">
         <div class="col">
-            <h2 th:text="'Listado de tareas de equipos'"></h2>
+            <h2 th:text="'Listado de tareas de equipos asignadas a ' + ${usuario.nombre}"></h2>
         </div>
     </div>
 
@@ -81,7 +81,6 @@
                     <th>Tarea</th>
                     <th>Estado</th>
                     <th>Equipo</th>
-                    <th>Acción</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -95,10 +94,8 @@
                             <td th:case="3" th:text="'Terminada'"></td>
                             <td th:case="*" th:text="'Sin estado'"></td>
                         </div>
-                        <td th:text="${tareaEquipo.getEquipo().getNombre()}"></td>
-
                         <td>
-                           botones aqui
+                            <a class="nav-link" th:href="@{/equipos/{idEquipo}/usuarios(idEquipo=${tareaEquipo.getEquipo().getId()})}" th:text="${tareaEquipo.getEquipo().getNombre()}"></a>
                         </td>
                     </div>
                 </tr>
