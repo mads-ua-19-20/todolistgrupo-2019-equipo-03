@@ -38,6 +38,7 @@
                             <th>Id</th>
                             <th>Titulo</th>
                             <th>Estado</th>
+                            <th>Fecha Límite</th>
                             <th>Asignación</th>
                             <th th:if="${apuntado == true}">Acción</th>
                         </tr>
@@ -53,6 +54,8 @@
                                     <td th:case="3" th:text="'Terminada'"></td>
                                     <td th:case="*" th:text="'Sin estado'"></td>
                                 </div>
+                                <td th:class="${tareaEquipo.getFechalimite() > fecha} ? '' : 'text-danger'" th:text="${tareaEquipo.getFechalimite()}"></td>
+
                                 <div th:if="${tareaEquipo.getUsuario() == null}">
                                     <td th:text="'Tarea sin asignar'"></td>
                                 </div>

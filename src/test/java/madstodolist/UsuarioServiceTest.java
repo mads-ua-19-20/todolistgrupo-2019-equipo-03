@@ -184,4 +184,23 @@ public class UsuarioServiceTest {
         assertThat(usuarioBaseDatos).isNotNull();
         assertThat(usuarioBaseDatos.isBloqueado()).isEqualTo(false);
     }
+
+    @Test
+    @Transactional
+    public void testModificarPerfilUsuario() throws Exception {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        // WHEN
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        usuarioService.modificaPerfilUsuario(1L, "Prueba", "prueba@ua", sdf.parse("1980-07-15"));
+        //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
+        Usuario usuarioBD = usuarioService.findById(1L);
+
+        // THEN
+
+        assertThat(usuarioBD.getNombre()).isEqualTo("Prueba");
+        assertThat(usuarioBD.getEmail()).isEqualTo("prueba@ua");
+        assertThat(usuarioBD.getFechaNacimiento()).isEqualTo(sdf.parse("1980-07-15"));
+    }
 }
