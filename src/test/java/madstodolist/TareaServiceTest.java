@@ -176,4 +176,27 @@ public class TareaServiceTest {
         assertThat(tareaService.findById(tarea.getId())).isNull();
 
     }
+
+    @Test
+    public void testListadoTareasByTitulo() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = new Usuario("ana.garcia@gmail.com");
+        usuario.setId(1L);
+
+        Tarea lavarCoche = new Tarea(usuario, "Lavar coche", null);
+        lavarCoche.setId(1L);
+        Tarea itv = new Tarea(usuario, "Pasar ITV", null);
+        itv.setId(2L);
+
+        // WHEN
+
+        List<Tarea> tareas = tareaService.allTareasUsuarioByTitulo(usuario, "Lavar coche");
+
+        // THEN
+
+        assertThat(tareas).contains(lavarCoche);
+        assertThat(tareas).doesNotContain(itv);
+    }
 }
