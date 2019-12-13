@@ -90,4 +90,9 @@ public class TareaService {
         tarea.setArchivada(archivar);
         tareaRepository.save(tarea);
     }
+
+    @Transactional(readOnly = true)
+    public List<Tarea> allTareasUsuarioByTitulo(Usuario usuario, String titulo) {
+        return tareaRepository.findAllTareasUsuarioByTitulo(usuario, titulo);
+    }
 }

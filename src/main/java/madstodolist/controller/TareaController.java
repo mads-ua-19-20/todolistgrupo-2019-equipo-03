@@ -70,7 +70,8 @@ public class TareaController {
     }
 
     @GetMapping("/usuarios/{id}/tareas")
-    public String listadoTareas(@PathVariable(value="id") Long idUsuario, Model model, HttpSession session) {
+    public String listadoTareas(@PathVariable(value="id") Long idUsuario, @ModelAttribute TareaData tareaData,
+                                Model model, HttpSession session) {
 
         managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
 
@@ -78,7 +79,14 @@ public class TareaController {
         if (usuario == null) {
             throw new UsuarioNotFoundException();
         }
-        List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
+        List<Tarea> tareas;
+
+        if (tareaData.getTitulo() == null || tareaData.getTitulo() == "") {
+            tareas = tareaService.allTareasUsuario(idUsuario);
+        }
+        else {
+            tareas = tareaService.allTareasUsuarioByTitulo(usuario, tareaData.getTitulo());
+        }
 
         LocalDate date = LocalDate.now();
         Date fecha = Date.valueOf(date);

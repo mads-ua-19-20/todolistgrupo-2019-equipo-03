@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -145,5 +146,23 @@ public class TareaTest {
         assertThat(usuario.getTareas()).contains(tarea);
         assertThat(tareas).isEqualTo(usuario.getTareas());
         assertThat(usuario.getTareas()).contains(tarea);
+    }
+
+    @Test
+    @Transactional
+    public void unUsuarioBuscaEnSusTareasByTitulo() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
+        tareaRepository.save(tarea);
+
+        // WHEN
+        List<Tarea> tareas = tareaRepository.findAllTareasUsuarioByTitulo(usuario, "MADS");
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
     }
 }
