@@ -1,9 +1,14 @@
 package madstodolist.model;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface TareaRepository extends CrudRepository<Tarea, Long> {
-    Optional<Tarea> findByTitulo(String s);
+    @Query("SELECT t FROM Tarea t WHERE t.usuario = :usu and t.titulo = :titulo")
+    List<Tarea> findAllTareasUsuarioByTitulo(
+            @Param("usu") Usuario usu,
+            @Param("titulo") String titulo);
 }

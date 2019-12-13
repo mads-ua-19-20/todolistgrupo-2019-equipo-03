@@ -89,6 +89,27 @@ public class TareaController {
         return "listaTareas";
     }
 
+    @GetMapping("/usuarios/{id}/tareas/{titulo}")
+    public String listadoTareas(@PathVariable(value="id") Long idUsuario, @PathVariable(value="titulo") String tituloTarea,
+                                Model model, HttpSession session) {
+
+        managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
+
+        Usuario usuario = usuarioService.findById(idUsuario);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+        List<Tarea> tareas = tareaService.allTareasUsuarioByTitulo(usuario, tituloTarea);
+
+        LocalDate date = LocalDate.now();
+        Date fecha = Date.valueOf(date);
+        model.addAttribute("fecha", fecha);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("tareas", tareas);
+        model.addAttribute("tareasequipo", usuario.getTareasEquipoAsignadas());
+        return "listaTareas";
+    }
+
     @GetMapping("/tareas/{id}/editar")
     public String formEditaTarea(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
                                  Model model, HttpSession session) {

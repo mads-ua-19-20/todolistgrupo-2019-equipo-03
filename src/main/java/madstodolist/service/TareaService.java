@@ -92,7 +92,7 @@ public class TareaService {
     }
 
     @Transactional(readOnly = true)
-    public Tarea findByTitulo(String titulo) {
-        return tareaRepository.findByTitulo(titulo).orElse(null);
+    public List<Tarea> allTareasUsuarioByTitulo(Usuario usuario, String titulo) {
+        return tareaRepository.findAllTareasUsuarioByTitulo(usuario, titulo);
     }
 }
