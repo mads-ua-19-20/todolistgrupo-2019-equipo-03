@@ -163,5 +163,21 @@ public class TareaController {
 
         return "";
     }
+
+    @PostMapping("tareas/{id}/public")
+    @ResponseBody
+    public String publicarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session){
+        Tarea tarea = tareaService.findById(idTarea);
+        if (tarea == null) {
+            throw new TareaNotFoundException();
+        }
+
+        managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
+
+        tareaService.hacePublicaPrivada(idTarea);
+        flash.addFlashAttribute("mensaje", "Tarea publicada/privatizada correctamente");
+
+        return "";
+    }
 }
 
