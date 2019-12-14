@@ -199,4 +199,19 @@ public class TareaServiceTest {
         assertThat(tareas).contains(lavarCoche);
         assertThat(tareas).doesNotContain(itv);
     }
+
+    @Test
+    @Transactional
+    public void testPublicarTarea(){
+        //GIVEN
+        Tarea tarea = tareaService.findById(1L);
+        boolean publicadaInicial = tarea.getPublica();
+        //WHEN
+        tareaService.hacePublicaPrivada(1L);
+
+        //THEN
+
+        assertThat(publicadaInicial).isEqualTo(false);
+        assertThat(tarea.getPublica()).isEqualTo(true);
+    }
 }

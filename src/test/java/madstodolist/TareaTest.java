@@ -51,6 +51,7 @@ public class TareaTest {
         assertThat(tarea.getEstado()).isEqualTo(1);
         assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
         assertThat(tarea.isArchivada()).isEqualTo(false);
+        assertThat(tarea.getPublica()).isEqualTo(false);
     }
 
     @Test
@@ -92,6 +93,7 @@ public class TareaTest {
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
         assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
+        assertThat(tarea.getPublica()).isEqualTo(false);
     }
 
     @Test(expected = Exception.class)
