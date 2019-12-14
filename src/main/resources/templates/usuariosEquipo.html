@@ -91,7 +91,9 @@
                         <tbody>
                         <tr th:each="usuario: ${usuariosEquipo}">
                             <td th:text="${usuario.id}"></td>
-                            <td th:text="${usuario.nombre}"></td>
+                            <td>
+                                <a class="nav-link" th:href="@{/usuarios/{id}/public(id=${usuario.id})}" th:text="${usuario.nombre}"></a>
+                            </td>
                             <td th:text="${usuario.email}"></td>
                             <td th:if="${apuntado} == true">
                                 <a th:if="${nombreUsuario} != ${usuario.nombre}" th:href="@{~/equipos/{idEquipo}/usuarios/{idUsuario}/{accion} (accion='bloquear',idUsuario=${usuario.id}, idEquipo=${id})}" class="btn btn-danger" th:text="'Bloquear'"/>

@@ -97,6 +97,33 @@ public class TareaController {
         return "listaTareas";
     }
 
+    @GetMapping("/usuarios/{id}/public")
+    public String perfilPublicListadoTareas(@PathVariable(value="id") Long idUsuario, Model model, HttpSession session) {
+
+        Long idUsuarioLogeado = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarIdLogNotNull(idUsuarioLogeado);
+
+        Usuario usuarioLog = usuarioService.findById(idUsuarioLogeado);
+        if (usuarioLog == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        Usuario usuario = usuarioService.findById(idUsuario);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+        List<Tarea> tareas = tareaService.allTareasUsuarioByPublica(usuario);
+
+
+        LocalDate date = LocalDate.now();
+        Date fecha = Date.valueOf(date);
+        model.addAttribute("usuarioLog", usuarioLog);
+        model.addAttribute("fecha", fecha);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("tareas", tareas);
+        return "perfilPublico";
+    }
+
     @GetMapping("/tareas/{id}/editar")
     public String formEditaTarea(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
                                  Model model, HttpSession session) {
