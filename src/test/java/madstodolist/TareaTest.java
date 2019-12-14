@@ -167,4 +167,23 @@ public class TareaTest {
 
         assertThat(tareas).isNotEmpty();
     }
+
+    @Test
+    @Transactional
+    public void unUsuarioBuscaEnSusTareasByPublica() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
+        tarea.setPublica(true);
+        tareaRepository.save(tarea);
+
+        // WHEN
+        List<Tarea> tareas = tareaRepository.findAllTareasUsuarioByPublica(usuario);
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
+    }
 }

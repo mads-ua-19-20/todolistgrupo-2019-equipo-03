@@ -117,4 +117,9 @@ public class TareaService {
     public List<Tarea> allTareasUsuarioByTitulo(Usuario usuario, String titulo) {
         return tareaRepository.findAllTareasUsuarioByTitulo(usuario, titulo);
     }
+
+    @Transactional(readOnly = true)
+    public List<Tarea> allTareasUsuarioByPublica(Usuario usuario) {
+        return tareaRepository.findAllTareasUsuarioByPublica(usuario);
+    }
 }

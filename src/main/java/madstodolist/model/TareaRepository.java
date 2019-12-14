@@ -11,4 +11,8 @@ public interface TareaRepository extends CrudRepository<Tarea, Long> {
     List<Tarea> findAllTareasUsuarioByTitulo(
             @Param("usu") Usuario usu,
             @Param("titulo") String titulo);
+
+    @Query("SELECT t FROM Tarea t WHERE t.usuario = :usu and t.publica = TRUE")
+    List<Tarea> findAllTareasUsuarioByPublica(
+            @Param("usu") Usuario usu);
 }
