@@ -199,4 +199,41 @@ public class TareaServiceTest {
         assertThat(tareas).contains(lavarCoche);
         assertThat(tareas).doesNotContain(itv);
     }
+
+    @Test
+    @Transactional
+    public void testListadoTareasByPublica() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = new Usuario("ana.garcia@gmail.com");
+        usuario.setId(1L);
+
+        Tarea lavarCoche = new Tarea(usuario, "Lavar coche", null);
+        lavarCoche.setId(1L);
+        tareaService.hacePublicaPrivada(1L);
+
+        // WHEN
+
+        List<Tarea> tareas = tareaService.allTareasUsuarioByPublica(usuario);
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
+    }
+
+    @Test
+    @Transactional
+    public void testPublicarTarea(){
+        //GIVEN
+        Tarea tarea = tareaService.findById(1L);
+        boolean publicadaInicial = tarea.getPublica();
+        //WHEN
+        tareaService.hacePublicaPrivada(1L);
+
+        //THEN
+
+        assertThat(publicadaInicial).isEqualTo(false);
+        assertThat(tarea.getPublica()).isEqualTo(true);
+    }
 }

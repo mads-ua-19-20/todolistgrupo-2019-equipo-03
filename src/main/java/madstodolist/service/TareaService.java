@@ -91,8 +91,35 @@ public class TareaService {
         tareaRepository.save(tarea);
     }
 
+    @Transactional
+    public boolean hacePublicaPrivada(Long idTarea) {
+        Tarea tarea = tareaRepository.findById(idTarea).orElse(null);
+        if (tarea == null) {
+            throw new TareaServiceException("No existe tarea con id " + idTarea);
+        }
+
+        Boolean pub;
+
+        if (Boolean.FALSE.equals(tarea.getPublica())) {
+            pub = true;
+        }
+        else {
+            pub = false;
+        }
+
+        tarea.setPublica(pub);
+        tareaRepository.save(tarea);
+
+        return tarea.getPublica();
+    }
+
     @Transactional(readOnly = true)
     public List<Tarea> allTareasUsuarioByTitulo(Usuario usuario, String titulo) {
         return tareaRepository.findAllTareasUsuarioByTitulo(usuario, titulo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Tarea> allTareasUsuarioByPublica(Usuario usuario) {
+        return tareaRepository.findAllTareasUsuarioByPublica(usuario);
     }
 }

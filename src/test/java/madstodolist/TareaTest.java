@@ -51,6 +51,7 @@ public class TareaTest {
         assertThat(tarea.getEstado()).isEqualTo(1);
         assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
         assertThat(tarea.isArchivada()).isEqualTo(false);
+        assertThat(tarea.getPublica()).isEqualTo(false);
     }
 
     @Test
@@ -92,6 +93,7 @@ public class TareaTest {
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
         assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
+        assertThat(tarea.getPublica()).isEqualTo(false);
     }
 
     @Test(expected = Exception.class)
@@ -160,6 +162,25 @@ public class TareaTest {
 
         // WHEN
         List<Tarea> tareas = tareaRepository.findAllTareasUsuarioByTitulo(usuario, "MADS");
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
+    }
+
+    @Test
+    @Transactional
+    public void unUsuarioBuscaEnSusTareasByPublica() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
+        tarea.setPublica(true);
+        tareaRepository.save(tarea);
+
+        // WHEN
+        List<Tarea> tareas = tareaRepository.findAllTareasUsuarioByPublica(usuario);
 
         // THEN
 

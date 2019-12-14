@@ -48,6 +48,11 @@
                         <td th:class="${tarea.fechaLimite > fecha} ? '' : 'text-danger'" th:text="${tarea.fechaLimite}"></td>
 
                         <td>
+                            <a class="btn btn-warning" href="#" onmouseover="" style="cursor: pointer;"
+                               th:onclick="'pub(\'/tareas/' + ${tarea.id} + '/public' + '\')'"/>
+                                <span th:if="${!tarea.publica}" th:text="publicar"></span>
+                                <span th:if="${tarea.publica}" th:text="privatizar"></span>
+                            </a>
                             <a class="btn btn-secondary" href="#" onmouseover="" style="cursor: pointer;"
                                th:onclick="'arch(\'/tareas/archivar/' + ${tarea.id} + '\')'"/>archivar</a>
                             <a class="btn btn-primary btn-xs" th:href="@{/tareas/{id}/editar(id=${tarea.id})}"/>editar</a>
@@ -138,6 +143,19 @@
         if (confirm('¿Estás seguro/a de que quieres archivar la tarea?')) {
             $.ajax({
                 url: urlArchivar,
+                type: 'POST',
+                success: function (results) {
+                    //refresh the page
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function pub(urlPublicar) {
+        if (confirm('¿Estás seguro/a de que quieres publicar/privatizar la tarea?')) {
+            $.ajax({
+                url: urlPublicar,
                 type: 'POST',
                 success: function (results) {
                     //refresh the page
