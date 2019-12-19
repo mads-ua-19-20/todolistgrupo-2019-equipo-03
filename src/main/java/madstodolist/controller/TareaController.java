@@ -10,10 +10,14 @@ import madstodolist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -45,8 +49,8 @@ public class TareaController {
     }
 
     @PostMapping("/usuarios/{id}/tareas/nueva")
-    public String nuevaTarea(@PathVariable(value="id") Long idUsuario, @ModelAttribute TareaData tareaData,
-                             Model model, RedirectAttributes flash,
+    public String nuevaTarea(@PathVariable(value="id") Long idUsuario, @Valid TareaData tareaData,
+                             BindingResult result, Model model, RedirectAttributes flash,
                              HttpSession session) {
 
         managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
@@ -55,13 +59,19 @@ public class TareaController {
         if (usuario == null) {
             throw new UsuarioNotFoundException();
         }
-        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo());
+
+        if (result.hasErrors()) {
+            return "redirect:/usuarios/" + idUsuario + "/tareas/nueva";
+        }
+
+        tareaService.nuevaTareaUsuario(idUsuario, tareaData.getTitulo(), tareaData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea creada correctamente");
         return "redirect:/usuarios/" + idUsuario + "/tareas";
     }
 
     @GetMapping("/usuarios/{id}/tareas")
-    public String listadoTareas(@PathVariable(value="id") Long idUsuario, Model model, HttpSession session) {
+    public String listadoTareas(@PathVariable(value="id") Long idUsuario, @ModelAttribute TareaData tareaData,
+                                Model model, HttpSession session) {
 
         managerUserSesion.comprobarUsuarioLogeado(session, idUsuario);
 
@@ -69,10 +79,49 @@ public class TareaController {
         if (usuario == null) {
             throw new UsuarioNotFoundException();
         }
-        List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
+        List<Tarea> tareas;
+
+        if (tareaData.getTitulo() == null || tareaData.getTitulo() == "") {
+            tareas = tareaService.allTareasUsuario(idUsuario);
+        }
+        else {
+            tareas = tareaService.allTareasUsuarioByTitulo(usuario, tareaData.getTitulo());
+        }
+
+        LocalDate date = LocalDate.now();
+        Date fecha = Date.valueOf(date);
+        model.addAttribute("fecha", fecha);
         model.addAttribute("usuario", usuario);
         model.addAttribute("tareas", tareas);
+        model.addAttribute("tareasequipo", usuario.getTareasEquipoAsignadas());
         return "listaTareas";
+    }
+
+    @GetMapping("/usuarios/{id}/public")
+    public String perfilPublicListadoTareas(@PathVariable(value="id") Long idUsuario, Model model, HttpSession session) {
+
+        Long idUsuarioLogeado = (Long) session.getAttribute("idUsuarioLogeado");
+        managerUserSesion.comprobarIdLogNotNull(idUsuarioLogeado);
+
+        Usuario usuarioLog = usuarioService.findById(idUsuarioLogeado);
+        if (usuarioLog == null) {
+            throw new UsuarioNotFoundException();
+        }
+
+        Usuario usuario = usuarioService.findById(idUsuario);
+        if (usuario == null) {
+            throw new UsuarioNotFoundException();
+        }
+        List<Tarea> tareas = tareaService.allTareasUsuarioByPublica(usuario);
+
+
+        LocalDate date = LocalDate.now();
+        Date fecha = Date.valueOf(date);
+        model.addAttribute("usuarioLog", usuarioLog);
+        model.addAttribute("fecha", fecha);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("tareas", tareas);
+        return "perfilPublico";
     }
 
     @GetMapping("/tareas/{id}/editar")
@@ -88,12 +137,13 @@ public class TareaController {
 
         model.addAttribute("tarea", tarea);
         tareaData.setTitulo(tarea.getTitulo());
+        tareaData.setFechalimite(tarea.getFechaLimite());
         return "formEditarTarea";
     }
 
     @PostMapping("/tareas/{id}/editar")
-    public String grabaTareaModificada(@PathVariable(value="id") Long idTarea, @ModelAttribute TareaData tareaData,
-                                       Model model, RedirectAttributes flash, HttpSession session) {
+    public String grabaTareaModificada(@PathVariable(value="id") Long idTarea, @Valid TareaData tareaData,
+                                       BindingResult result, Model model, RedirectAttributes flash, HttpSession session) {
         Tarea tarea = tareaService.findById(idTarea);
         if (tarea == null) {
             throw new TareaNotFoundException();
@@ -101,9 +151,29 @@ public class TareaController {
 
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
 
-        tareaService.modificaTarea(idTarea, tareaData.getTitulo());
+        if (result.hasErrors()) {
+            return "redirect:/tareas/" + idTarea + "/editar";
+        }
+
+        tareaService.modificaTarea(idTarea, tareaData.getTitulo(), tareaData.getEstado(), tareaData.getFechalimite());
         flash.addFlashAttribute("mensaje", "Tarea modificada correctamente");
         return "redirect:/usuarios/" + tarea.getUsuario().getId() + "/tareas";
+    }
+
+    @PostMapping("tareas/archivar/{id}")
+    @ResponseBody
+    public String archivarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session){
+        Tarea tarea = tareaService.findById(idTarea);
+        if (tarea == null) {
+            throw new TareaNotFoundException();
+        }
+
+        managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
+
+        tareaService.archivaTarea(idTarea, true);
+        flash.addFlashAttribute("mensaje", "Tarea archivada correctamente");
+
+        return "";
     }
 
     @DeleteMapping("/tareas/{id}")
@@ -117,7 +187,23 @@ public class TareaController {
         managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
 
         tareaService.borraTarea(idTarea);
-        flash.addFlashAttribute("mensaje", "Tarea borrada correctamente");
+
+        return "";
+    }
+
+    @PostMapping("tareas/{id}/public")
+    @ResponseBody
+    public String publicarTarea(@PathVariable(value="id") Long idTarea, RedirectAttributes flash, HttpSession session){
+        Tarea tarea = tareaService.findById(idTarea);
+        if (tarea == null) {
+            throw new TareaNotFoundException();
+        }
+
+        managerUserSesion.comprobarUsuarioLogeado(session, tarea.getUsuario().getId());
+
+        tareaService.hacePublicaPrivada(idTarea);
+        flash.addFlashAttribute("mensaje", "Tarea publicada/privatizada correctamente");
+
         return "";
     }
 }

@@ -12,6 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,13 +41,17 @@ public class TareaTest {
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
 
         // WHEN
-
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", sdf.parse("2019-09-10"));
 
         // THEN
 
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
+        assertThat(tarea.getEstado()).isEqualTo(1);
+        assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
+        assertThat(tarea.isArchivada()).isEqualTo(false);
+        assertThat(tarea.getPublica()).isEqualTo(false);
     }
 
     @Test
@@ -51,9 +59,9 @@ public class TareaTest {
         // GIVEN
 
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
-        Tarea tarea1 = new Tarea(usuario, "Práctica 1 de MADS");
-        Tarea tarea2 = new Tarea(usuario, "Práctica 1 de MADS");
-        Tarea tarea3 = new Tarea(usuario, "Pagar el alquiler");
+        Tarea tarea1 = new Tarea(usuario, "Práctica 1 de MADS", null);
+        Tarea tarea2 = new Tarea(usuario, "Práctica 1 de MADS", null);
+        Tarea tarea3 = new Tarea(usuario, "Pagar el alquiler", null);
 
         // THEN
 
@@ -67,12 +75,13 @@ public class TareaTest {
 
     @Test
     @Transactional
-    public void crearTareaEnBaseDatos() {
+    public void crearTareaEnBaseDatos() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         Usuario usuario = usuarioRepository.findById(1L).orElse(null);
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", sdf.parse("2019-09-10"));
 
         // WHEN
 
@@ -83,6 +92,8 @@ public class TareaTest {
         assertThat(tarea.getId()).isNotNull();
         assertThat(tarea.getUsuario()).isEqualTo(usuario);
         assertThat(tarea.getTitulo()).isEqualTo("Práctica 1 de MADS");
+        assertThat(tarea.getFechaLimite()).isEqualTo(sdf.parse("2019-09-10"));
+        assertThat(tarea.getPublica()).isEqualTo(false);
     }
 
     @Test(expected = Exception.class)
@@ -92,7 +103,7 @@ public class TareaTest {
         // Creamos un usuario sin ID y, por tanto, sin estar en gestionado
         // por JPA
         Usuario usuario = new Usuario("juan.gutierrez@gmail.com");
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
 
         // WHEN
 
@@ -129,7 +140,7 @@ public class TareaTest {
         // WHEN
 
         Set<Tarea> tareas = usuario.getTareas();
-        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS");
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
         tareaRepository.save(tarea);
 
         // THEN
@@ -137,5 +148,42 @@ public class TareaTest {
         assertThat(usuario.getTareas()).contains(tarea);
         assertThat(tareas).isEqualTo(usuario.getTareas());
         assertThat(usuario.getTareas()).contains(tarea);
+    }
+
+    @Test
+    @Transactional
+    public void unUsuarioBuscaEnSusTareasByTitulo() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
+        tareaRepository.save(tarea);
+
+        // WHEN
+        List<Tarea> tareas = tareaRepository.findAllTareasUsuarioByTitulo(usuario, "MADS");
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
+    }
+
+    @Test
+    @Transactional
+    public void unUsuarioBuscaEnSusTareasByPublica() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+        Tarea tarea = new Tarea(usuario, "Práctica 1 de MADS", null);
+        tarea.setPublica(true);
+        tareaRepository.save(tarea);
+
+        // WHEN
+        List<Tarea> tareas = tareaRepository.findAllTareasUsuarioByPublica(usuario);
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
     }
 }

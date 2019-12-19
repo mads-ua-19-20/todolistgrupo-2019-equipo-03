@@ -1,8 +1,8 @@
 package madstodolist.model;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +14,16 @@ public class Tarea implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private int estado;
+
+    private boolean archivada;
+
+    private boolean publica;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechalimite;
+
     @NotNull
     private String titulo;
 
@@ -34,9 +44,13 @@ public class Tarea implements Serializable {
     // Al crear una tarea la asociamos automáticamente a un
     // usuario. Actualizamos por tanto la lista de tareas del
     // usuario.
-    public Tarea(Usuario usuario, String titulo) {
+    public Tarea(Usuario usuario, String titulo, Date fechalimite) {
         this.usuario = usuario;
         this.titulo = titulo;
+        this.estado = 1;
+        this.fechalimite = fechalimite;
+        this.archivada = false;
+        this.publica = false;
         usuario.getTareas().add(this);
     }
 
@@ -64,6 +78,25 @@ public class Tarea implements Serializable {
         this.usuario = usuario;
     }
 
+    public int getEstado(){ return estado; }
+
+    public void setEstado(int estado){ this.estado = estado; }
+
+    public Date getFechaLimite() { return fechalimite; }
+
+    public void setFechaLimite(Date fechalimite) { this.fechalimite = fechalimite; }
+
+    public boolean isArchivada() {
+        return archivada;
+    }
+
+    public void setArchivada(boolean archivada) {
+        this.archivada = archivada;
+    }
+
+    public boolean getPublica() { return publica; }
+
+    public void setPublica(boolean publica) { this.publica = publica; }
 
     @Override
     public boolean equals(Object o) {

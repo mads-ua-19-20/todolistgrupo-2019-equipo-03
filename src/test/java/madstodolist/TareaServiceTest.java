@@ -10,7 +10,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,12 +32,13 @@ public class TareaServiceTest {
 
 
     @Test
-    public void testNuevaTareaUsuario() {
+    public void testNuevaTareaUsuario() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
         // WHEN
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Práctica 1 de MADS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Práctica 1 de MADS", sdf.parse("2019-09-10"));
 
         // THEN
 
@@ -49,7 +54,7 @@ public class TareaServiceTest {
         Usuario usuario = new Usuario("ana.garcia@gmail.com");
         usuario.setId(1L);
 
-        Tarea lavarCoche = new Tarea(usuario, "Lavar coche");
+        Tarea lavarCoche = new Tarea(usuario, "Lavar coche", null);
         lavarCoche.setId(1L);
 
         // WHEN
@@ -77,29 +82,90 @@ public class TareaServiceTest {
     }
 
     @Test
-    public void testModificarTarea() {
+    @Transactional
+    public void testModificarTarea() throws Exception {
         // GIVEN
         // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
 
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", sdf.parse("2019-09-10"));
         Long idNuevaTarea = tarea.getId();
+        int estadoInicial = tarea.getEstado();
 
         // WHEN
-
-        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula");
+        //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 0, sdf.parse("2019-09-25"));
         Tarea tareaBD = tareaService.findById(idNuevaTarea);
 
         // THEN
 
         assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
         assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getEstado()).isEqualTo(estadoInicial);
+        assertThat(tareaBD.getFechaLimite()).isEqualTo(sdf.parse("2019-09-25"));
+    }
+
+    @Test
+    @Transactional
+    public void testModificarTareaEstado() {
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", null);
+        Long idNuevaTarea = tarea.getId();
+        int estadoInicial = tarea.getEstado();
+
+        // WHEN
+        //El estado no se va a modificar debido a que 0 no es un estado permitido (sólo se permiten estados 1, 2, 3)
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2, null);
+        Tarea tareaBD = tareaService.findById(idNuevaTarea);
+
+        // THEN
+
+        assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getEstado()).isNotEqualTo(estadoInicial);
+        assertThat(tareaBD.getEstado()).isEqualTo(2);
+    }
+
+    @Test
+    @Transactional
+    public void testModificarTareaFechaLimite() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Pagar el recibo", sdf.parse("2019-09-10"));
+        Long idNuevaTarea = tarea.getId();
+        Date fechaInicial = tarea.getFechaLimite();
+
+        // WHEN
+        Tarea tareaModificada = tareaService.modificaTarea(idNuevaTarea, "Pagar la matrícula", 2, sdf.parse("2019-09-25"));
+        Tarea tareaBD = tareaService.findById(idNuevaTarea);
+        Date fechaLimite2 = tarea.getFechaLimite();
+
+        // THEN
+
+        assertThat(tareaModificada.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getTitulo()).isEqualTo("Pagar la matrícula");
+        assertThat(tareaBD.getFechaLimite()).isNotEqualTo(fechaInicial);
+        assertThat(tareaBD.getFechaLimite()).isEqualTo(fechaLimite2);
+    }
+
+    @Test
+    @Transactional
+    public void testArchivarTarea(){
+        //GIVEN
+        Tarea tarea = tareaService.findById(1L);
+        boolean archivadaInicial = tarea.isArchivada();
+        //WHEN
+        tareaService.archivaTarea(1L, true);
+
+        //THEN
+
+        assertThat(archivadaInicial).isEqualTo(false);
+        assertThat(tarea.isArchivada()).isEqualTo(true);
     }
 
     @Test
     public void testBorrarTarea() {
         // GIVEN
 
-        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Estudiar MADS");
+        Tarea tarea = tareaService.nuevaTareaUsuario(1L, "Estudiar MADS", null);
 
         // WHEN
 
@@ -109,5 +175,65 @@ public class TareaServiceTest {
 
         assertThat(tareaService.findById(tarea.getId())).isNull();
 
+    }
+
+    @Test
+    public void testListadoTareasByTitulo() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = new Usuario("ana.garcia@gmail.com");
+        usuario.setId(1L);
+
+        Tarea lavarCoche = new Tarea(usuario, "Lavar coche", null);
+        lavarCoche.setId(1L);
+        Tarea itv = new Tarea(usuario, "Pasar ITV", null);
+        itv.setId(2L);
+
+        // WHEN
+
+        List<Tarea> tareas = tareaService.allTareasUsuarioByTitulo(usuario, "Lavar coche");
+
+        // THEN
+
+        assertThat(tareas).contains(lavarCoche);
+        assertThat(tareas).doesNotContain(itv);
+    }
+
+    @Test
+    @Transactional
+    public void testListadoTareasByPublica() {
+        // GIVEN
+        // En el application.properties se cargan los datos de prueba del fichero datos-test.sql
+
+        Usuario usuario = new Usuario("ana.garcia@gmail.com");
+        usuario.setId(1L);
+
+        Tarea lavarCoche = new Tarea(usuario, "Lavar coche", null);
+        lavarCoche.setId(1L);
+        tareaService.hacePublicaPrivada(1L);
+
+        // WHEN
+
+        List<Tarea> tareas = tareaService.allTareasUsuarioByPublica(usuario);
+
+        // THEN
+
+        assertThat(tareas).isNotEmpty();
+    }
+
+    @Test
+    @Transactional
+    public void testPublicarTarea(){
+        //GIVEN
+        Tarea tarea = tareaService.findById(1L);
+        boolean publicadaInicial = tarea.getPublica();
+        //WHEN
+        tareaService.hacePublicaPrivada(1L);
+
+        //THEN
+
+        assertThat(publicadaInicial).isEqualTo(false);
+        assertThat(tarea.getPublica()).isEqualTo(true);
     }
 }

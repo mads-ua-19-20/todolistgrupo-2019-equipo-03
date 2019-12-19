@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head (titulo='Editar tarea de equipo')"></head>
+
+<body>
+<div th:replace="fragments::barra-menu (nombreUsuario=${usuario.getNombre()}, id=${usuario.getId()})"/>
+<div class="container-fluid">
+
+    <h2 th:text="'Modificación de la tarea de equipo ' + ${tareaEquipo.getId()}"></h2>
+
+    <form method="post"
+          th:action="@{/equipos/{idEquipo}/usuarios/tareaEquipo/{idTareaEquipo}/editar(idEquipo=${idEquipo}, idTareaEquipo=${tareaEquipo.getId()})}"
+          th:object="${tareaEquipoData}">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="titulo">Título de la tarea:</label>
+                <input class="form-control" id="titulo" name="titulo" required th:field="*{titulo}" type="text"/><br>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="estado">Estado</label>
+                    </div>
+                    <select class="custom-select" id="estado" th:field="*{estado}">
+                        <option th:value=0 th:text="'Elige un estado...'" selected></option>
+                        <option th:value=1 th:text="'Pendiente'"></option>
+                        <option th:value=2 th:text="'En progreso'"></option>
+                        <option th:value=3 th:text="'Terminada'"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fechalimite">Fecha límite de la tarea:</label>
+                    <input class="form-control" id="fechalimite" name="fechalimite" placeholder="01-12-2019" th:field="*{fechalimite}" type="datetime-local"/>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="asignacion">Asignación</label>
+                    </div>
+                    <select class="custom-select" id="asignacion" th:field="*{asignacion}">
+                        <option th:value="null" th:text="'Sin asignar'"></option>
+                        <option th:each="usu: ${tareaEquipo.getEquipo().getUsuarios()}" th:value="${usu.getId()}" th:text="${usu.getNombre()}"></option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Modificar tarea</button>
+            <a class="btn btn-link" th:href="@{/equipos/{id}/usuarios(id=${idEquipo})}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments::javascript"/>
+
+</body>
+</html>

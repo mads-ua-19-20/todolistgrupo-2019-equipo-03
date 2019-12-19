@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
@@ -62,7 +64,7 @@ public class TareaWebTest {
 
     @Test
     public void editarTareaDevuelveForm() throws Exception {
-        Tarea tarea = new Tarea(new Usuario("domingo@ua.es"), "Lavar el coche");
+        Tarea tarea = new Tarea(new Usuario("domingo@ua.es"), "Lavar el coche", null);
         tarea.setId(1L);
         tarea.getUsuario().setId(1L);
 
@@ -76,6 +78,8 @@ public class TareaWebTest {
                     // Contiene el texto de la tarea a editar
                     containsString("Lavar el coche"),
                     // Contiene enlace a listar tareas del usuario si se cancela la edición
-                    containsString("href=\"/usuarios/1/tareas\""))));
+                    containsString("href=\"/usuarios/1/tareas\""),
+                    containsString("Fecha límite"),
+                    containsString("Estado"))));
     }
 }

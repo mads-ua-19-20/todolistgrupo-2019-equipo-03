@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +70,19 @@ public class UsuarioService {
             usuarioRepository.save(usuario);
         }
 
+        return usuario;
+    }
+
+    @Transactional
+    public Usuario modificaPerfilUsuario(Long idUsuario, String nombre, String email, Date fechaNacimiento) {
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new UsuarioServiceException("No existe usuario con id " + idUsuario);
+        }
+        usuario.setNombre(nombre);
+        usuario.setEmail(email);
+        usuario.setFechaNacimiento(fechaNacimiento);
+        usuarioRepository.save(usuario);
         return usuario;
     }
 
