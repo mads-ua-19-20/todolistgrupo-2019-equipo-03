@@ -28,3 +28,8 @@ $ java -jar target/mads-todolist-inicial-0.0.1-SNAPSHOT.jar
 Una vez lanzada la aplicación puedes abrir un navegador y probar la página de inicio accediendo a:
 
 - [http://localhost:8080/login](http://localhost:8080/login)
+
+# Equipo
+- Omar Moukket
+- Daniel Primitivo
+- Alejandro Martínez
